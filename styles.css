@@ -2431,6 +2431,87 @@ body {
     line-height: 1;
 }
 
+/* Settings select dropdown */
+.setting-select {
+    padding: 0.4rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-family: var(--font-ui);
+    cursor: pointer;
+}
+
+/* ============================================
+   RTL (Arabic) Layout
+   ============================================ */
+[dir="rtl"] {
+    font-family: 'Amiri', var(--font-ui), sans-serif;
+}
+
+[dir="rtl"] .header-left,
+[dir="rtl"] .header-right {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .header { flex-direction: row-reverse; }
+
+[dir="rtl"] .hero-top-row { flex-direction: row-reverse; }
+[dir="rtl"] .hero-greeting { text-align: right; }
+[dir="rtl"] .hero-continue-btn { flex-direction: row-reverse; text-align: right; }
+[dir="rtl"] .hero-continue-arrow svg { transform: scaleX(-1); }
+[dir="rtl"] .hero-progress-row { flex-direction: row-reverse; }
+
+[dir="rtl"] .surah-card {
+    flex-direction: row-reverse;
+    text-align: right;
+}
+
+[dir="rtl"] .surah-name-ar {
+    order: -1;
+}
+
+[dir="rtl"] .section-header { flex-direction: row-reverse; }
+
+[dir="rtl"] .setting-item { flex-direction: row-reverse; }
+[dir="rtl"] .setting-info { text-align: right; }
+
+[dir="rtl"] .streak-info { flex-direction: row-reverse; text-align: right; }
+
+[dir="rtl"] .continue-card { flex-direction: row-reverse; text-align: right; }
+[dir="rtl"] .continue-card .card-arrow svg { transform: scaleX(-1); }
+
+[dir="rtl"] .countdown-card { flex-direction: row-reverse; text-align: right; }
+
+[dir="rtl"] .bookmark-card { text-align: right; }
+[dir="rtl"] .bookmark-header { flex-direction: row-reverse; }
+
+[dir="rtl"] .page-header { text-align: right; }
+
+[dir="rtl"] .verse-actions { flex-direction: row-reverse; }
+
+[dir="rtl"] .nav-btn svg { transform: scaleX(-1); }
+[dir="rtl"] .surah-nav { flex-direction: row-reverse; }
+
+[dir="rtl"] .reader-header { flex-direction: row-reverse; }
+[dir="rtl"] .reader-info { text-align: right; }
+[dir="rtl"] #btn-back svg { transform: scaleX(-1); }
+
+[dir="rtl"] .control-group { text-align: right; }
+
+[dir="rtl"] .timer-item { flex-direction: row-reverse; }
+
+[dir="rtl"] .goal-card { text-align: right; }
+
+[dir="rtl"] .ramadan-progress { flex-direction: row-reverse; }
+
+[dir="rtl"] .search-input-wrapper { flex-direction: row-reverse; }
+
+[dir="rtl"] .empty-state { text-align: right; }
+
+[dir="rtl"] .install-banner { flex-direction: row-reverse; text-align: right; }
+
 /* Print */
 @media print {
     .header, .audio-player, .search-bar, .reader-controls, .verse-actions, .surah-nav, .reader-timer-bar, .install-banner { display: none; }

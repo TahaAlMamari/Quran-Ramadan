@@ -64,6 +64,279 @@
     ];
 
     // ==========================================
+    // Internationalization (i18n)
+    // ==========================================
+    const STRINGS = {
+        en: {
+            // Header & Nav
+            appName: 'Quran Companion',
+            home: 'Home',
+            search: 'Search',
+            bookmarks: 'Bookmarks',
+            ramadanPlan: 'Ramadan Plan',
+            settings: 'Settings',
+            toggleTheme: 'Toggle Theme',
+            searchPlaceholder: 'Search surahs...',
+            // Hero
+            greeting_morning: 'Good Morning',
+            greeting_afternoon: 'Good Afternoon',
+            greeting_evening: 'Good Evening',
+            greeting_default: 'Assalamu Alaikum',
+            complete: 'Complete',
+            surahs: 'Surahs',
+            saved: 'Saved',
+            streak: 'Streak',
+            continueLabel: 'Continue:',
+            verse: 'Verse',
+            ramadanDay: 'Day',
+            dLeft: 'd left',
+            dToRamadan: 'd to Ramadan',
+            // Daily Goals
+            dailyGoals: 'Daily Goals',
+            recitation: 'Recitation',
+            listening: 'Listening',
+            min: 'min',
+            // Surah List
+            allSurahs: 'All Surahs',
+            all: 'All',
+            meccan: 'Meccan',
+            medinan: 'Medinan',
+            verses: 'verses',
+            // Reader
+            reciter: 'Reciter',
+            translation: 'Translation',
+            fontSize: 'Font Size',
+            tajweed: 'Tajweed',
+            colors: 'Colors',
+            ghunnah: 'Ghunnah',
+            ikhfa: 'Ikhfa',
+            idgham: 'Idgham',
+            iqlab: 'Iqlab',
+            qalqalah: 'Qalqalah',
+            madd: 'Madd',
+            silent: 'Silent',
+            recite: 'Recite',
+            listen: 'Listen',
+            startPause: 'Start/Pause',
+            previousSurah: 'Previous Surah',
+            nextSurah: 'Next Surah',
+            play: 'Play',
+            save: 'Save',
+            savedBtn: 'Saved',
+            copy: 'Copy',
+            bookmark: 'Bookmark',
+            // Bookmarks
+            yourSavedVerses: 'Your saved verses',
+            noBookmarks: 'No bookmarks yet',
+            noBookmarksHint: 'Tap the bookmark icon on any verse to save it here',
+            // Ramadan
+            ramadanKhatmaPlan: 'Ramadan Khatma Plan',
+            completeQuran30: 'Complete the entire Quran in 30 days',
+            juzDone: 'Juz Done',
+            pagesToday: 'Pages Today',
+            daysLeft: 'Days Left',
+            juz: 'Juz',
+            // Settings
+            customizeExperience: 'Customize your experience',
+            language: 'Language',
+            languageDesc: 'Switch between English and Arabic',
+            darkMode: 'Dark Mode',
+            darkModeDesc: 'Switch between light and dark theme',
+            showTranslation: 'Show Translation',
+            showTranslationDesc: 'Display English translation below Arabic',
+            autoScroll: 'Auto-scroll',
+            autoScrollDesc: 'Scroll to current verse during playback',
+            verseNumbersArabic: 'Verse Numbers (Arabic)',
+            verseNumbersDesc: 'Show verse numbers in Arabic-Indic numerals',
+            resetProgress: 'Reset Progress',
+            resetProgressDesc: 'Clear all reading progress and bookmarks',
+            resetAll: 'Reset All',
+            // Audio
+            previousVerse: 'Previous Verse',
+            playPause: 'Play/Pause',
+            nextVerse: 'Next Verse',
+            repeatVerse: 'Repeat Verse',
+            closePlayer: 'Close Player',
+            // Toasts & Messages
+            bookmarkRemoved: 'Bookmark removed',
+            verseBookmarked: 'Verse bookmarked',
+            verseCopied: 'Verse copied',
+            failedCopy: 'Failed to copy',
+            goalComplete: 'Complete!',
+            reciteGoalComplete: 'Recitation goal complete!',
+            listenGoalComplete: 'Listening goal complete!',
+            repeatOn: 'Repeat on',
+            repeatOff: 'Repeat off',
+            appInstalled: 'App installed!',
+            loadingSurah: 'Loading surah...',
+            failedLoadSurah: 'Failed to load surah. Please check your connection and try again.',
+            failedLoadData: 'Failed to load Quran data. Please check your internet connection.',
+            retry: 'Retry',
+            confirmReset: 'Are you sure you want to reset all progress, bookmarks, and settings?',
+            installApp: 'Install Quran Companion',
+            installDesc: 'Add to home screen for the full experience',
+            install: 'Install',
+            // Loading
+            loadingTitle: 'Quran Companion',
+            loadingSubtitle: 'Ramadan Edition',
+            // Ramadan Countdown
+            ramadanBeginsIn: 'Ramadan begins in',
+            day_s: 'day',
+            days_s: 'days',
+            ramadanMubarak: 'Ramadan Mubarak!',
+            remaining: 'remaining',
+        },
+        ar: {
+            // Header & Nav
+            appName: 'رفيق القرآن',
+            home: 'الرئيسية',
+            search: 'بحث',
+            bookmarks: 'المحفوظات',
+            ramadanPlan: 'خطة رمضان',
+            settings: 'الإعدادات',
+            toggleTheme: 'تبديل المظهر',
+            searchPlaceholder: 'ابحث عن سورة...',
+            // Hero
+            greeting_morning: 'صباح الخير',
+            greeting_afternoon: 'مساء الخير',
+            greeting_evening: 'مساء الخير',
+            greeting_default: 'السلام عليكم',
+            complete: 'مكتمل',
+            surahs: 'سور',
+            saved: 'محفوظ',
+            streak: 'متتالي',
+            continueLabel: 'أكمل:',
+            verse: 'آية',
+            ramadanDay: 'يوم',
+            dLeft: 'يوم متبقي',
+            dToRamadan: 'يوم لرمضان',
+            // Daily Goals
+            dailyGoals: 'الأهداف اليومية',
+            recitation: 'التلاوة',
+            listening: 'الاستماع',
+            min: 'دقيقة',
+            // Surah List
+            allSurahs: 'جميع السور',
+            all: 'الكل',
+            meccan: 'مكية',
+            medinan: 'مدنية',
+            verses: 'آيات',
+            // Reader
+            reciter: 'القارئ',
+            translation: 'الترجمة',
+            fontSize: 'حجم الخط',
+            tajweed: 'تجويد',
+            colors: 'ألوان',
+            ghunnah: 'غنة',
+            ikhfa: 'إخفاء',
+            idgham: 'إدغام',
+            iqlab: 'إقلاب',
+            qalqalah: 'قلقلة',
+            madd: 'مد',
+            silent: 'صامت',
+            recite: 'تلاوة',
+            listen: 'استماع',
+            startPause: 'تشغيل/إيقاف',
+            previousSurah: 'السورة السابقة',
+            nextSurah: 'السورة التالية',
+            play: 'تشغيل',
+            save: 'حفظ',
+            savedBtn: 'محفوظ',
+            copy: 'نسخ',
+            bookmark: 'حفظ',
+            // Bookmarks
+            yourSavedVerses: 'آياتك المحفوظة',
+            noBookmarks: 'لا توجد محفوظات',
+            noBookmarksHint: 'اضغط على أيقونة الحفظ في أي آية لحفظها هنا',
+            // Ramadan
+            ramadanKhatmaPlan: 'خطة ختم القرآن في رمضان',
+            completeQuran30: 'أكمل القرآن الكريم في ٣٠ يومًا',
+            juzDone: 'جزء مكتمل',
+            pagesToday: 'صفحات اليوم',
+            daysLeft: 'أيام متبقية',
+            juz: 'جزء',
+            // Settings
+            customizeExperience: 'خصّص تجربتك',
+            language: 'اللغة',
+            languageDesc: 'التبديل بين العربية والإنجليزية',
+            darkMode: 'الوضع الداكن',
+            darkModeDesc: 'التبديل بين المظهر الفاتح والداكن',
+            showTranslation: 'إظهار الترجمة',
+            showTranslationDesc: 'عرض الترجمة الإنجليزية أسفل النص العربي',
+            autoScroll: 'التمرير التلقائي',
+            autoScrollDesc: 'التمرير للآية الحالية أثناء التشغيل',
+            verseNumbersArabic: 'أرقام الآيات (عربية)',
+            verseNumbersDesc: 'عرض أرقام الآيات بالأرقام العربية',
+            resetProgress: 'إعادة تعيين التقدم',
+            resetProgressDesc: 'مسح جميع بيانات القراءة والمحفوظات',
+            resetAll: 'إعادة تعيين الكل',
+            // Audio
+            previousVerse: 'الآية السابقة',
+            playPause: 'تشغيل/إيقاف',
+            nextVerse: 'الآية التالية',
+            repeatVerse: 'تكرار الآية',
+            closePlayer: 'إغلاق المشغل',
+            // Toasts & Messages
+            bookmarkRemoved: 'تم إزالة المحفوظة',
+            verseBookmarked: 'تم حفظ الآية',
+            verseCopied: 'تم نسخ الآية',
+            failedCopy: 'فشل النسخ',
+            goalComplete: 'مكتمل!',
+            reciteGoalComplete: 'اكتمل هدف التلاوة!',
+            listenGoalComplete: 'اكتمل هدف الاستماع!',
+            repeatOn: 'التكرار مفعّل',
+            repeatOff: 'التكرار متوقف',
+            appInstalled: 'تم تثبيت التطبيق!',
+            loadingSurah: 'جاري تحميل السورة...',
+            failedLoadSurah: 'فشل تحميل السورة. يرجى التحقق من الاتصال والمحاولة مرة أخرى.',
+            failedLoadData: 'فشل تحميل بيانات القرآن. يرجى التحقق من اتصال الإنترنت.',
+            retry: 'إعادة المحاولة',
+            confirmReset: 'هل أنت متأكد من إعادة تعيين جميع البيانات والمحفوظات والإعدادات؟',
+            installApp: 'تثبيت رفيق القرآن',
+            installDesc: 'أضف للشاشة الرئيسية للتجربة الكاملة',
+            install: 'تثبيت',
+            // Loading
+            loadingTitle: 'رفيق القرآن',
+            loadingSubtitle: 'إصدار رمضان',
+            // Ramadan Countdown
+            ramadanBeginsIn: 'رمضان يبدأ بعد',
+            day_s: 'يوم',
+            days_s: 'أيام',
+            ramadanMubarak: 'رمضان مبارك!',
+            remaining: 'متبقي',
+        },
+    };
+
+    // Translation helper
+    function t(key) {
+        const lang = state.settings.language || 'en';
+        return STRINGS[lang]?.[key] || STRINGS.en[key] || key;
+    }
+
+    // Apply language: update dir, translate data-i18n elements, re-render dynamic content
+    function applyLanguage() {
+        const lang = state.settings.language || 'en';
+        const isRTL = lang === 'ar';
+        document.documentElement.lang = lang;
+        document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+
+        // Translate static elements with data-i18n attributes
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            el.textContent = t(el.dataset.i18n);
+        });
+        document.querySelectorAll('[data-i18n-title]').forEach(el => {
+            el.title = t(el.dataset.i18nTitle);
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            el.placeholder = t(el.dataset.i18nPlaceholder);
+        });
+
+        // Update language selector value
+        const langSelect = $('#setting-language');
+        if (langSelect) langSelect.value = lang;
+    }
+
+    // ==========================================
     // State
     // ==========================================
     const state = {
@@ -90,6 +363,7 @@
         autoScroll: true,
         arabicNumbers: true,
         tajweed: false,
+        language: 'en',
         reciter: 'ar.alafasy',
         translation: 'en.sahih',
         ...state.settings,
@@ -191,7 +465,7 @@
                 <div class="surah-number">${s.number}</div>
                 <div class="surah-info">
                     <div class="surah-name-en">${s.englishName}</div>
-                    <div class="surah-meta">${s.englishNameTranslation} · ${s.numberOfAyahs} verses · ${s.revelationType}</div>
+                    <div class="surah-meta">${s.englishNameTranslation} · ${s.numberOfAyahs} ${t('verses')} · ${s.revelationType === 'Meccan' ? t('meccan') : t('medinan')}</div>
                 </div>
                 <div class="surah-name-ar">${s.name}</div>
             </div>
@@ -216,13 +490,13 @@
 
     function renderHeroGreeting() {
         const hour = new Date().getHours();
-        let greeting;
-        if (hour < 5) greeting = 'Assalamu Alaikum';
-        else if (hour < 12) greeting = 'Good Morning';
-        else if (hour < 17) greeting = 'Good Afternoon';
-        else if (hour < 21) greeting = 'Good Evening';
-        else greeting = 'Assalamu Alaikum';
-        dom.heroGreeting.textContent = greeting;
+        let key;
+        if (hour < 5) key = 'greeting_default';
+        else if (hour < 12) key = 'greeting_morning';
+        else if (hour < 17) key = 'greeting_afternoon';
+        else if (hour < 21) key = 'greeting_evening';
+        else key = 'greeting_default';
+        dom.heroGreeting.textContent = t(key);
     }
 
     function renderHeroRamadanBadge() {
@@ -231,13 +505,13 @@
             dom.heroRamadanBadge.classList.add('visible');
             dom.heroRamadanBadge.innerHTML = `
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-                Day ${info.dayOf} · ${info.daysLeft}d left
+                ${t('ramadanDay')} ${info.dayOf} · ${info.daysLeft} ${t('dLeft')}
             `;
         } else if (info.status === 'before' && info.daysUntil <= 30) {
             dom.heroRamadanBadge.classList.add('visible');
             dom.heroRamadanBadge.innerHTML = `
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-                ${info.daysUntil}d to Ramadan
+                ${info.daysUntil} ${t('dToRamadan')}
             `;
         }
     }
@@ -262,9 +536,10 @@
         ];
         const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
         const verse = DAILY_VERSES[dayOfYear % DAILY_VERSES.length];
+        const isAr = (state.settings.language || 'en') === 'ar';
         dom.heroDailyVerse.innerHTML = `
             <div class="hero-verse-text">${verse.text}</div>
-            <div class="hero-verse-ref">${verse.translation} — ${verse.ref}</div>
+            <div class="hero-verse-ref">${isAr ? verse.ref : verse.translation + ' — ' + verse.ref}</div>
         `;
     }
 
@@ -279,8 +554,8 @@
             <button class="hero-continue-btn" id="hero-continue-btn">
                 <div class="hero-continue-icon">${surahNameAr ? surahNameAr.charAt(0) : '📖'}</div>
                 <div class="hero-continue-text">
-                    <div class="hero-continue-title">Continue: ${surahName}</div>
-                    <div class="hero-continue-sub">Verse ${verse}</div>
+                    <div class="hero-continue-title">${t('continueLabel')} ${surahName}</div>
+                    <div class="hero-continue-sub">${t('verse')} ${verse}</div>
                 </div>
                 <div class="hero-continue-arrow">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
@@ -306,17 +581,17 @@
             <div class="hero-stat">
                 <div class="hero-stat-icon">📖</div>
                 <div class="hero-stat-value">${totalRead}</div>
-                <div class="hero-stat-label">Surahs</div>
+                <div class="hero-stat-label">${t('surahs')}</div>
             </div>
             <div class="hero-stat">
                 <div class="hero-stat-icon">🔖</div>
                 <div class="hero-stat-value">${state.bookmarks.length}</div>
-                <div class="hero-stat-label">Saved</div>
+                <div class="hero-stat-label">${t('saved')}</div>
             </div>
             <div class="hero-stat">
                 <div class="hero-stat-icon">🔥</div>
                 <div class="hero-stat-value">${state.streak.count}</div>
-                <div class="hero-stat-label">Streak</div>
+                <div class="hero-stat-label">${t('streak')}</div>
             </div>
         `;
     }
@@ -471,17 +746,17 @@
                     </div>
                     ${showTranslation ? `<div class="verse-translation">${ayah.numberInSurah}. ${translationText}</div>` : ''}
                     <div class="verse-actions">
-                        <button class="verse-action-btn btn-play-verse" data-index="${i}" title="Play">
+                        <button class="verse-action-btn btn-play-verse" data-index="${i}" title="${t('play')}">
                             <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                            Play
+                            ${t('play')}
                         </button>
-                        <button class="verse-action-btn btn-bookmark-verse ${isBookmarked ? 'bookmarked' : ''}" data-number="${ayah.number}" data-index="${i}" title="Bookmark">
+                        <button class="verse-action-btn btn-bookmark-verse ${isBookmarked ? 'bookmarked' : ''}" data-number="${ayah.number}" data-index="${i}" title="${t('bookmark')}">
                             <svg viewBox="0 0 24 24" fill="${isBookmarked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
-                            ${isBookmarked ? 'Saved' : 'Save'}
+                            ${isBookmarked ? t('savedBtn') : t('save')}
                         </button>
-                        <button class="verse-action-btn btn-copy-verse" data-index="${i}" title="Copy">
+                        <button class="verse-action-btn btn-copy-verse" data-index="${i}" title="${t('copy')}">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-                            Copy
+                            ${t('copy')}
                         </button>
                     </div>
                 </div>
@@ -547,7 +822,7 @@
                 state.bookmarks.splice(idx, 1);
                 saveBookmarks();
                 renderBookmarks();
-                showToast('Bookmark removed');
+                showToast(t('bookmarkRemoved'));
             });
         });
     }
@@ -630,7 +905,7 @@
         // Show loading state
         dom.versesContainer.innerHTML = `
             <div style="text-align:center;padding:3rem;color:var(--text-tertiary);">
-                <p>Loading surah...</p>
+                <p>${t('loadingSurah')}</p>
             </div>
         `;
 
@@ -681,8 +956,8 @@
         } catch (err) {
             dom.versesContainer.innerHTML = `
                 <div style="text-align:center;padding:3rem;color:var(--danger);">
-                    <p>Failed to load surah. Please check your connection and try again.</p>
-                    <button onclick="location.reload()" style="margin-top:1rem;padding:0.5rem 1rem;border:1px solid;border-radius:8px;cursor:pointer;background:transparent;color:inherit;">Retry</button>
+                    <p>${t('failedLoadSurah')}</p>
+                    <button onclick="location.reload()" style="margin-top:1rem;padding:0.5rem 1rem;border:1px solid;border-radius:8px;cursor:pointer;background:transparent;color:inherit;">${t('retry')}</button>
                 </div>
             `;
         }
@@ -821,7 +1096,7 @@
 
         if (existing >= 0) {
             state.bookmarks.splice(existing, 1);
-            showToast('Bookmark removed');
+            showToast(t('bookmarkRemoved'));
         } else {
             state.bookmarks.push({
                 number: arabic.number,
@@ -831,7 +1106,7 @@
                 arabic: state.settings.tajweed ? stripHTML(parseTajweedText(arabic.text)) : arabic.text,
                 translation: trans.text,
             });
-            showToast('Verse bookmarked');
+            showToast(t('verseBookmarked'));
         }
         saveBookmarks();
         renderVerses();
@@ -852,9 +1127,9 @@
         const text = `${arabicText}\n\n${trans.text}\n\n— ${state.currentSurah.englishName} ${arabic.numberInSurah}`;
 
         navigator.clipboard.writeText(text).then(() => {
-            showToast('Verse copied');
+            showToast(t('verseCopied'));
         }).catch(() => {
-            showToast('Failed to copy');
+            showToast(t('failedCopy'));
         });
     }
 
@@ -1089,7 +1364,7 @@
             updateReciteDisplay();
             if (state.timerData.reciteRemaining <= 0) {
                 stopReciteTimer();
-                showToast('Recitation goal complete!');
+                showToast(t('reciteGoalComplete'));
             }
             if (state.timerData.reciteRemaining % 10 === 0) saveTimers();
         }, 1000);
@@ -1116,7 +1391,7 @@
             updateListenDisplay();
             if (state.timerData.listenRemaining <= 0) {
                 stopListenTimer();
-                showToast('Listening goal complete!');
+                showToast(t('listenGoalComplete'));
             }
             if (state.timerData.listenRemaining % 10 === 0) saveTimers();
         }, 1000);
@@ -1277,7 +1552,7 @@
         $('#btn-audio-repeat').addEventListener('click', () => {
             state.audioState.repeat = !state.audioState.repeat;
             $('#btn-audio-repeat').classList.toggle('active', state.audioState.repeat);
-            showToast(state.audioState.repeat ? 'Repeat on' : 'Repeat off');
+            showToast(state.audioState.repeat ? t('repeatOn') : t('repeatOff'));
         });
 
         // Bookmark surah button in reader
@@ -1290,6 +1565,16 @@
         });
 
         // Settings toggles
+        $('#setting-language').addEventListener('change', (e) => {
+            state.settings.language = e.target.value;
+            saveSettings();
+            applyLanguage();
+            // Re-render dynamic content in current view
+            if (state.currentView === 'home') renderHero();
+            if (state.currentView === 'reader' && state.currentSurah) renderVerses();
+            if (state.currentView === 'bookmarks') renderBookmarks();
+        });
+
         $('#setting-dark-mode').addEventListener('change', (e) => {
             applyTheme(e.target.checked);
         });
@@ -1312,7 +1597,7 @@
         });
 
         $('#btn-reset').addEventListener('click', () => {
-            if (confirm('Are you sure you want to reset all progress, bookmarks, and settings?')) {
+            if (confirm(t('confirmReset'))) {
                 localStorage.removeItem('qc_bookmarks');
                 localStorage.removeItem('qc_progress');
                 localStorage.removeItem('qc_ramadan');
@@ -1374,10 +1659,12 @@
     async function init() {
         // Apply saved settings
         applyTheme(state.settings.darkMode);
+        applyLanguage();
         $('#setting-dark-mode').checked = state.settings.darkMode;
         $('#setting-translation').checked = state.settings.showTranslation;
         $('#setting-autoscroll').checked = state.settings.autoScroll;
         $('#setting-arabic-numbers').checked = state.settings.arabicNumbers;
+        $('#setting-language').value = state.settings.language || 'en';
         dom.selectReciter.value = state.settings.reciter;
         dom.selectTranslation.value = state.settings.translation;
         dom.fontSizeDisplay.textContent = state.fontSize;
@@ -1398,8 +1685,8 @@
         } catch (err) {
             dom.surahList.innerHTML = `
                 <div style="text-align:center;padding:2rem;color:var(--danger);">
-                    <p>Failed to load Quran data. Please check your internet connection.</p>
-                    <button onclick="location.reload()" style="margin-top:1rem;padding:0.5rem 1rem;border:1px solid;border-radius:8px;cursor:pointer;background:transparent;color:inherit;">Retry</button>
+                    <p>${t('failedLoadData')}</p>
+                    <button onclick="location.reload()" style="margin-top:1rem;padding:0.5rem 1rem;border:1px solid;border-radius:8px;cursor:pointer;background:transparent;color:inherit;">${t('retry')}</button>
                 </div>
             `;
         }
@@ -1457,7 +1744,7 @@
                 deferredInstallPrompt.prompt();
                 const { outcome } = await deferredInstallPrompt.userChoice;
                 if (outcome === 'accepted') {
-                    showToast('App installed!');
+                    showToast(t('appInstalled'));
                 }
                 deferredInstallPrompt = null;
             }
