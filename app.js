@@ -264,9 +264,10 @@
     }
 
     // Parse tajweed bracket notation from the API into HTML <tajweed> elements.
-    // The AlQuran Cloud quran-tajweed edition returns text like:
-    //   [h:9421]ٱ[/h]  [n]ـٰ[/n]  [q]ق[/q]
-    // which must be converted to styled <tajweed> elements for CSS to color them.
+    // The AlQuran Cloud quran-tajweed edition returns nested brackets like:
+    //   [h:9421[ٱ]  [n[ـٰ]  [q[ق]
+    // Pass 1: replace [letter identifiers with opening <tajweed> tags
+    // Pass 2: replace remaining [ with "> and ] with </tajweed>
     function parseTajweedText(text) {
         const tagMap = {
             'h': 'ham_wasl',
@@ -288,14 +289,20 @@
             'g': 'ghunnah',
         };
 
-        // Replace opening tags: [x] or [x:123]
-        let result = text.replace(/\[([a-z])(?::\d+)?\]/g, (match, letter) => {
-            const className = tagMap[letter];
-            return className ? `<tajweed class="${className}">` : match;
-        });
+        // Pass 1: Replace [letter identifiers with <tajweed> opening tags.
+        // e.g. [h:9421[ٱ] → <tajweed class="ham_wasl" data-tajweed=":9421[ٱ]
+        let result = text;
+        for (const [letter, className] of Object.entries(tagMap)) {
+            const re = new RegExp('\\[' + letter, 'g');
+            result = result.replace(re, '<tajweed class="' + className + '" data-tajweed="');
+        }
 
-        // Replace closing tags: [/x]
-        result = result.replace(/\[\/[a-z]\]/g, '</tajweed>');
+        // Pass 2: Replace remaining [ with "> and ] with </tajweed>
+        // This closes the data-tajweed attribute and wraps the content.
+        // e.g. <tajweed class="ham_wasl" data-tajweed=":9421[ٱ]
+        //    → <tajweed class="ham_wasl" data-tajweed=":9421">ٱ</tajweed>
+        result = result.replace(/\[/g, '">');
+        result = result.replace(/\]/g, '</tajweed>');
 
         return result;
     }
