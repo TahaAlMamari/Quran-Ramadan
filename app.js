@@ -233,15 +233,17 @@
         }
     }
 
-    // Bismillah pattern to strip from first verse when decorative Bismillah is shown
-    const BISMILLAH_PATTERN = /^بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ\s*/;
+    // Strip diacritics to get base Arabic letters for comparison
+    function stripDiacritics(str) {
+        return str.replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]/g, '');
+    }
 
     function renderVerses() {
         const { arabic, translation, audio } = state.currentVerses;
         const showTranslation = state.settings.showTranslation;
         const useArabicNums = state.settings.arabicNumbers;
         const surahNum = state.currentSurah ? state.currentSurah.number : 0;
-        const showDecoativeBismillah = surahNum !== 1 && surahNum !== 9;
+        const showDecorativeBismillah = surahNum !== 1 && surahNum !== 9;
 
         dom.versesContainer.innerHTML = arabic.ayahs.map((ayah, i) => {
             const verseNum = useArabicNums ? toArabicNumber(ayah.numberInSurah) : ayah.numberInSurah;
@@ -250,8 +252,23 @@
 
             // Strip Bismillah from first verse if decorative Bismillah is shown
             let verseText = ayah.text;
-            if (i === 0 && showDecoativeBismillah) {
-                verseText = verseText.replace(BISMILLAH_PATTERN, '').trim();
+            if (i === 0 && showDecorativeBismillah) {
+                const base = stripDiacritics(verseText);
+                const idx = base.indexOf('الرحيم');
+                if (idx !== -1) {
+                    // Find the matching position in the original text (with diacritics)
+                    let basePos = 0;
+                    let origPos = 0;
+                    while (basePos < idx + 'الرحيم'.length && origPos < verseText.length) {
+                        if (stripDiacritics(verseText[origPos]) === '') {
+                            origPos++;
+                        } else {
+                            basePos++;
+                            origPos++;
+                        }
+                    }
+                    verseText = verseText.substring(origPos).trim();
+                }
             }
 
             return `
