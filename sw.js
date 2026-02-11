@@ -1,5 +1,5 @@
 // Quran Companion — Service Worker
-const CACHE_NAME = 'quran-companion-v1';
+const CACHE_NAME = 'quran-companion-v4';
 const STATIC_ASSETS = [
     './',
     './index.html',
