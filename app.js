@@ -64,6 +64,279 @@
     ];
 
     // ==========================================
+    // Internationalization (i18n)
+    // ==========================================
+    const STRINGS = {
+        en: {
+            // Header & Nav
+            appName: 'Quran Companion',
+            home: 'Home',
+            search: 'Search',
+            bookmarks: 'Bookmarks',
+            ramadanPlan: 'Ramadan Plan',
+            settings: 'Settings',
+            toggleTheme: 'Toggle Theme',
+            searchPlaceholder: 'Search surahs...',
+            // Hero
+            greeting_morning: 'Good Morning',
+            greeting_afternoon: 'Good Afternoon',
+            greeting_evening: 'Good Evening',
+            greeting_default: 'Assalamu Alaikum',
+            complete: 'Complete',
+            surahs: 'Surahs',
+            saved: 'Saved',
+            streak: 'Streak',
+            continueLabel: 'Continue:',
+            verse: 'Verse',
+            ramadanDay: 'Day',
+            dLeft: 'd left',
+            dToRamadan: 'd to Ramadan',
+            // Daily Goals
+            dailyGoals: 'Daily Goals',
+            recitation: 'Recitation',
+            listening: 'Listening',
+            min: 'min',
+            // Surah List
+            allSurahs: 'All Surahs',
+            all: 'All',
+            meccan: 'Meccan',
+            medinan: 'Medinan',
+            verses: 'verses',
+            // Reader
+            reciter: 'Reciter',
+            translation: 'Translation',
+            fontSize: 'Font Size',
+            tajweed: 'Tajweed',
+            colors: 'Colors',
+            ghunnah: 'Ghunnah',
+            ikhfa: 'Ikhfa',
+            idgham: 'Idgham',
+            iqlab: 'Iqlab',
+            qalqalah: 'Qalqalah',
+            madd: 'Madd',
+            silent: 'Silent',
+            recite: 'Recite',
+            listen: 'Listen',
+            startPause: 'Start/Pause',
+            previousSurah: 'Previous Surah',
+            nextSurah: 'Next Surah',
+            play: 'Play',
+            save: 'Save',
+            savedBtn: 'Saved',
+            copy: 'Copy',
+            bookmark: 'Bookmark',
+            // Bookmarks
+            yourSavedVerses: 'Your saved verses',
+            noBookmarks: 'No bookmarks yet',
+            noBookmarksHint: 'Tap the bookmark icon on any verse to save it here',
+            // Ramadan
+            ramadanKhatmaPlan: 'Ramadan Khatma Plan',
+            completeQuran30: 'Complete the entire Quran in 30 days',
+            juzDone: 'Juz Done',
+            pagesToday: 'Pages Today',
+            daysLeft: 'Days Left',
+            juz: 'Juz',
+            // Settings
+            customizeExperience: 'Customize your experience',
+            language: 'Language',
+            languageDesc: 'Switch between English and Arabic',
+            darkMode: 'Dark Mode',
+            darkModeDesc: 'Switch between light and dark theme',
+            showTranslation: 'Show Translation',
+            showTranslationDesc: 'Display English translation below Arabic',
+            autoScroll: 'Auto-scroll',
+            autoScrollDesc: 'Scroll to current verse during playback',
+            verseNumbersArabic: 'Verse Numbers (Arabic)',
+            verseNumbersDesc: 'Show verse numbers in Arabic-Indic numerals',
+            resetProgress: 'Reset Progress',
+            resetProgressDesc: 'Clear all reading progress and bookmarks',
+            resetAll: 'Reset All',
+            // Audio
+            previousVerse: 'Previous Verse',
+            playPause: 'Play/Pause',
+            nextVerse: 'Next Verse',
+            repeatVerse: 'Repeat Verse',
+            closePlayer: 'Close Player',
+            // Toasts & Messages
+            bookmarkRemoved: 'Bookmark removed',
+            verseBookmarked: 'Verse bookmarked',
+            verseCopied: 'Verse copied',
+            failedCopy: 'Failed to copy',
+            goalComplete: 'Complete!',
+            reciteGoalComplete: 'Recitation goal complete!',
+            listenGoalComplete: 'Listening goal complete!',
+            repeatOn: 'Repeat on',
+            repeatOff: 'Repeat off',
+            appInstalled: 'App installed!',
+            loadingSurah: 'Loading surah...',
+            failedLoadSurah: 'Failed to load surah. Please check your connection and try again.',
+            failedLoadData: 'Failed to load Quran data. Please check your internet connection.',
+            retry: 'Retry',
+            confirmReset: 'Are you sure you want to reset all progress, bookmarks, and settings?',
+            installApp: 'Install Quran Companion',
+            installDesc: 'Add to home screen for the full experience',
+            install: 'Install',
+            // Loading
+            loadingTitle: 'Quran Companion',
+            loadingSubtitle: 'Ramadan Edition',
+            // Ramadan Countdown
+            ramadanBeginsIn: 'Ramadan begins in',
+            day_s: 'day',
+            days_s: 'days',
+            ramadanMubarak: 'Ramadan Mubarak!',
+            remaining: 'remaining',
+        },
+        ar: {
+            // Header & Nav
+            appName: 'رفيق القرآن',
+            home: 'الرئيسية',
+            search: 'بحث',
+            bookmarks: 'المحفوظات',
+            ramadanPlan: 'خطة رمضان',
+            settings: 'الإعدادات',
+            toggleTheme: 'تبديل المظهر',
+            searchPlaceholder: 'ابحث عن سورة...',
+            // Hero
+            greeting_morning: 'صباح الخير',
+            greeting_afternoon: 'مساء الخير',
+            greeting_evening: 'مساء الخير',
+            greeting_default: 'السلام عليكم',
+            complete: 'مكتمل',
+            surahs: 'سور',
+            saved: 'محفوظ',
+            streak: 'متتالي',
+            continueLabel: 'أكمل:',
+            verse: 'آية',
+            ramadanDay: 'يوم',
+            dLeft: 'يوم متبقي',
+            dToRamadan: 'يوم لرمضان',
+            // Daily Goals
+            dailyGoals: 'الأهداف اليومية',
+            recitation: 'التلاوة',
+            listening: 'الاستماع',
+            min: 'دقيقة',
+            // Surah List
+            allSurahs: 'جميع السور',
+            all: 'الكل',
+            meccan: 'مكية',
+            medinan: 'مدنية',
+            verses: 'آيات',
+            // Reader
+            reciter: 'القارئ',
+            translation: 'الترجمة',
+            fontSize: 'حجم الخط',
+            tajweed: 'تجويد',
+            colors: 'ألوان',
+            ghunnah: 'غنة',
+            ikhfa: 'إخفاء',
+            idgham: 'إدغام',
+            iqlab: 'إقلاب',
+            qalqalah: 'قلقلة',
+            madd: 'مد',
+            silent: 'صامت',
+            recite: 'تلاوة',
+            listen: 'استماع',
+            startPause: 'تشغيل/إيقاف',
+            previousSurah: 'السورة السابقة',
+            nextSurah: 'السورة التالية',
+            play: 'تشغيل',
+            save: 'حفظ',
+            savedBtn: 'محفوظ',
+            copy: 'نسخ',
+            bookmark: 'حفظ',
+            // Bookmarks
+            yourSavedVerses: 'آياتك المحفوظة',
+            noBookmarks: 'لا توجد محفوظات',
+            noBookmarksHint: 'اضغط على أيقونة الحفظ في أي آية لحفظها هنا',
+            // Ramadan
+            ramadanKhatmaPlan: 'خطة ختم القرآن في رمضان',
+            completeQuran30: 'أكمل القرآن الكريم في ٣٠ يومًا',
+            juzDone: 'جزء مكتمل',
+            pagesToday: 'صفحات اليوم',
+            daysLeft: 'أيام متبقية',
+            juz: 'جزء',
+            // Settings
+            customizeExperience: 'خصّص تجربتك',
+            language: 'اللغة',
+            languageDesc: 'التبديل بين العربية والإنجليزية',
+            darkMode: 'الوضع الداكن',
+            darkModeDesc: 'التبديل بين المظهر الفاتح والداكن',
+            showTranslation: 'إظهار الترجمة',
+            showTranslationDesc: 'عرض الترجمة الإنجليزية أسفل النص العربي',
+            autoScroll: 'التمرير التلقائي',
+            autoScrollDesc: 'التمرير للآية الحالية أثناء التشغيل',
+            verseNumbersArabic: 'أرقام الآيات (عربية)',
+            verseNumbersDesc: 'عرض أرقام الآيات بالأرقام العربية',
+            resetProgress: 'إعادة تعيين التقدم',
+            resetProgressDesc: 'مسح جميع بيانات القراءة والمحفوظات',
+            resetAll: 'إعادة تعيين الكل',
+            // Audio
+            previousVerse: 'الآية السابقة',
+            playPause: 'تشغيل/إيقاف',
+            nextVerse: 'الآية التالية',
+            repeatVerse: 'تكرار الآية',
+            closePlayer: 'إغلاق المشغل',
+            // Toasts & Messages
+            bookmarkRemoved: 'تم إزالة المحفوظة',
+            verseBookmarked: 'تم حفظ الآية',
+            verseCopied: 'تم نسخ الآية',
+            failedCopy: 'فشل النسخ',
+            goalComplete: 'مكتمل!',
+            reciteGoalComplete: 'اكتمل هدف التلاوة!',
+            listenGoalComplete: 'اكتمل هدف الاستماع!',
+            repeatOn: 'التكرار مفعّل',
+            repeatOff: 'التكرار متوقف',
+            appInstalled: 'تم تثبيت التطبيق!',
+            loadingSurah: 'جاري تحميل السورة...',
+            failedLoadSurah: 'فشل تحميل السورة. يرجى التحقق من الاتصال والمحاولة مرة أخرى.',
+            failedLoadData: 'فشل تحميل بيانات القرآن. يرجى التحقق من اتصال الإنترنت.',
+            retry: 'إعادة المحاولة',
+            confirmReset: 'هل أنت متأكد من إعادة تعيين جميع البيانات والمحفوظات والإعدادات؟',
+            installApp: 'تثبيت رفيق القرآن',
+            installDesc: 'أضف للشاشة الرئيسية للتجربة الكاملة',
+            install: 'تثبيت',
+            // Loading
+            loadingTitle: 'رفيق القرآن',
+            loadingSubtitle: 'إصدار رمضان',
+            // Ramadan Countdown
+            ramadanBeginsIn: 'رمضان يبدأ بعد',
+            day_s: 'يوم',
+            days_s: 'أيام',
+            ramadanMubarak: 'رمضان مبارك!',
+            remaining: 'متبقي',
+        },
+    };
+
+    // Translation helper
+    function t(key) {
+        const lang = state.settings.language || 'en';
+        return STRINGS[lang]?.[key] || STRINGS.en[key] || key;
+    }
+
+    // Apply language: update dir, translate data-i18n elements, re-render dynamic content
+    function applyLanguage() {
+        const lang = state.settings.language || 'en';
+        const isRTL = lang === 'ar';
+        document.documentElement.lang = lang;
+        document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+
+        // Translate static elements with data-i18n attributes
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            el.textContent = t(el.dataset.i18n);
+        });
+        document.querySelectorAll('[data-i18n-title]').forEach(el => {
+            el.title = t(el.dataset.i18nTitle);
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            el.placeholder = t(el.dataset.i18nPlaceholder);
+        });
+
+        // Update language selector value
+        const langSelect = $('#setting-language');
+        if (langSelect) langSelect.value = lang;
+    }
+
+    // ==========================================
     // State
     // ==========================================
     const state = {
@@ -90,6 +363,7 @@
         autoScroll: true,
         arabicNumbers: true,
         tajweed: false,
+        language: 'en',
         reciter: 'ar.alafasy',
         translation: 'en.sahih',
         ...state.settings,
@@ -108,10 +382,13 @@
         searchInput: $('#search-input'),
         surahList: $('#surah-list'),
         heroStats: $('#hero-stats'),
+        heroGreeting: $('#hero-greeting'),
+        heroRamadanBadge: $('#hero-ramadan-badge'),
+        heroDailyVerse: $('#hero-daily-verse'),
+        heroContinue: $('#hero-continue'),
+        heroProgressCircle: $('#progress-circle'),
+        heroProgressPct: $('#progress-pct'),
         continueReading: $('#continue-reading'),
-        continueCard: $('#continue-card'),
-        streakCount: $('#streak-count'),
-        streakFlame: $('#streak-flame'),
         versesContainer: $('#verses-container'),
         readerBismillah: $('#reader-bismillah'),
         readerSurahName: $('#reader-surah-name'),
@@ -188,7 +465,7 @@
                 <div class="surah-number">${s.number}</div>
                 <div class="surah-info">
                     <div class="surah-name-en">${s.englishName}</div>
-                    <div class="surah-meta">${s.englishNameTranslation} · ${s.numberOfAyahs} verses · ${s.revelationType}</div>
+                    <div class="surah-meta">${s.englishNameTranslation} · ${s.numberOfAyahs} ${t('verses')} · ${s.revelationType === 'Meccan' ? t('meccan') : t('medinan')}</div>
                 </div>
                 <div class="surah-name-ar">${s.name}</div>
             </div>
@@ -202,53 +479,132 @@
         });
     }
 
+    function renderHero() {
+        renderHeroGreeting();
+        renderHeroRamadanBadge();
+        renderHeroDailyVerse();
+        renderHeroContinue();
+        renderHeroProgress();
+        renderHeroStats();
+    }
+
+    function renderHeroGreeting() {
+        const hour = new Date().getHours();
+        let key;
+        if (hour < 5) key = 'greeting_default';
+        else if (hour < 12) key = 'greeting_morning';
+        else if (hour < 17) key = 'greeting_afternoon';
+        else if (hour < 21) key = 'greeting_evening';
+        else key = 'greeting_default';
+        dom.heroGreeting.textContent = t(key);
+    }
+
+    function renderHeroRamadanBadge() {
+        const info = getRamadanInfo();
+        if (info.status === 'during') {
+            dom.heroRamadanBadge.classList.add('visible');
+            dom.heroRamadanBadge.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                ${t('ramadanDay')} ${info.dayOf} · ${info.daysLeft} ${t('dLeft')}
+            `;
+        } else if (info.status === 'before' && info.daysUntil <= 30) {
+            dom.heroRamadanBadge.classList.add('visible');
+            dom.heroRamadanBadge.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                ${info.daysUntil} ${t('dToRamadan')}
+            `;
+        }
+    }
+
+    function renderHeroDailyVerse() {
+        // Pick a verse based on today's date for consistency
+        const DAILY_VERSES = [
+            { text: 'فَإِنَّ مَعَ ٱلْعُسْرِ يُسْرًا', ref: 'Ash-Sharh 94:5', translation: 'For indeed, with hardship comes ease.' },
+            { text: 'وَمَن يَتَوَكَّلْ عَلَى ٱللَّهِ فَهُوَ حَسْبُهُۥ', ref: 'At-Talaq 65:3', translation: 'Whoever relies upon Allah, He is sufficient for him.' },
+            { text: 'وَٱذْكُرُوٓا۟ ٱللَّهَ كَثِيرًا لَّعَلَّكُمْ تُفْلِحُونَ', ref: 'Al-Jumu\'ah 62:10', translation: 'Remember Allah often so that you may succeed.' },
+            { text: 'رَبِّ ٱشْرَحْ لِى صَدْرِى', ref: 'Ta-Ha 20:25', translation: 'My Lord, expand for me my chest.' },
+            { text: 'إِنَّ ٱللَّهَ مَعَ ٱلصَّـٰبِرِينَ', ref: 'Al-Baqarah 2:153', translation: 'Indeed, Allah is with the patient.' },
+            { text: 'وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰٓ', ref: 'Ad-Duha 93:5', translation: 'And your Lord is going to give you, and you will be satisfied.' },
+            { text: 'رَبَّنَآ ءَاتِنَا فِى ٱلدُّنْيَا حَسَنَةً وَفِى ٱلْـَٔاخِرَةِ حَسَنَةً', ref: 'Al-Baqarah 2:201', translation: 'Our Lord, give us good in this world and good in the Hereafter.' },
+            { text: 'وَنُنَزِّلُ مِنَ ٱلْقُرْءَانِ مَا هُوَ شِفَآءٌ وَرَحْمَةٌ لِّلْمُؤْمِنِينَ', ref: 'Al-Isra 17:82', translation: 'We send down the Quran as a healing and mercy for the believers.' },
+            { text: 'فَٱذْكُرُونِىٓ أَذْكُرْكُمْ', ref: 'Al-Baqarah 2:152', translation: 'Remember Me, and I will remember you.' },
+            { text: 'وَهُوَ مَعَكُمْ أَيْنَ مَا كُنتُمْ', ref: 'Al-Hadid 57:4', translation: 'He is with you wherever you are.' },
+            { text: 'قُلْ هُوَ ٱللَّهُ أَحَدٌ', ref: 'Al-Ikhlas 112:1', translation: 'Say: He is Allah, the One.' },
+            { text: 'أَلَا بِذِكْرِ ٱللَّهِ تَطْمَئِنُّ ٱلْقُلُوبُ', ref: 'Ar-Ra\'d 13:28', translation: 'Verily, in the remembrance of Allah do hearts find rest.' },
+            { text: 'وَقُل رَّبِّ زِدْنِى عِلْمًا', ref: 'Ta-Ha 20:114', translation: 'And say: My Lord, increase me in knowledge.' },
+            { text: 'إِنَّ رَحْمَتَ ٱللَّهِ قَرِيبٌ مِّنَ ٱلْمُحْسِنِينَ', ref: 'Al-A\'raf 7:56', translation: 'Indeed, the mercy of Allah is near to the doers of good.' },
+        ];
+        const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+        const verse = DAILY_VERSES[dayOfYear % DAILY_VERSES.length];
+        const isAr = (state.settings.language || 'en') === 'ar';
+        dom.heroDailyVerse.innerHTML = `
+            <div class="hero-verse-text">${verse.text}</div>
+            <div class="hero-verse-ref">${isAr ? verse.ref : verse.translation + ' — ' + verse.ref}</div>
+        `;
+    }
+
+    function renderHeroContinue() {
+        const last = localStorage.getItem('qc_last_read');
+        if (!last) {
+            dom.heroContinue.innerHTML = '';
+            return;
+        }
+        const { surahNumber, surahName, surahNameAr, verse } = JSON.parse(last);
+        dom.heroContinue.innerHTML = `
+            <button class="hero-continue-btn" id="hero-continue-btn">
+                <div class="hero-continue-icon">${surahNameAr ? surahNameAr.charAt(0) : '📖'}</div>
+                <div class="hero-continue-text">
+                    <div class="hero-continue-title">${t('continueLabel')} ${surahName}</div>
+                    <div class="hero-continue-sub">${t('verse')} ${verse}</div>
+                </div>
+                <div class="hero-continue-arrow">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+            </button>
+        `;
+        $('#hero-continue-btn').onclick = () => openSurah(surahNumber, verse);
+    }
+
+    function renderHeroProgress() {
+        const totalRead = Object.keys(state.readingProgress).length;
+        const pct = Math.round((totalRead / 114) * 100);
+        const circumference = 2 * Math.PI * 34; // r=34
+        const offset = circumference - (pct / 100) * circumference;
+        dom.heroProgressCircle.style.strokeDashoffset = offset;
+        dom.heroProgressPct.textContent = pct + '%';
+    }
+
     function renderHeroStats() {
         const totalRead = Object.keys(state.readingProgress).length;
+        updateStreak();
         dom.heroStats.innerHTML = `
             <div class="hero-stat">
+                <div class="hero-stat-icon">📖</div>
                 <div class="hero-stat-value">${totalRead}</div>
-                <div class="hero-stat-label">Surahs Read</div>
+                <div class="hero-stat-label">${t('surahs')}</div>
             </div>
             <div class="hero-stat">
+                <div class="hero-stat-icon">🔖</div>
                 <div class="hero-stat-value">${state.bookmarks.length}</div>
-                <div class="hero-stat-label">Bookmarks</div>
+                <div class="hero-stat-label">${t('saved')}</div>
             </div>
             <div class="hero-stat">
+                <div class="hero-stat-icon">🔥</div>
                 <div class="hero-stat-value">${state.streak.count}</div>
-                <div class="hero-stat-label">Day Streak</div>
+                <div class="hero-stat-label">${t('streak')}</div>
             </div>
         `;
     }
 
     function renderContinueReading() {
-        const last = localStorage.getItem('qc_last_read');
-        if (!last) {
-            dom.continueReading.classList.add('hidden');
-            return;
-        }
-        const { surahNumber, surahName, surahNameAr, verse } = JSON.parse(last);
-        dom.continueReading.classList.remove('hidden');
-        dom.continueCard.innerHTML = `
-            <div class="card-icon">${surahNameAr ? surahNameAr.charAt(0) : '📖'}</div>
-            <div class="card-text">
-                <div class="card-title">${surahName}</div>
-                <div class="card-subtitle">Verse ${verse} · Tap to continue</div>
-            </div>
-            <div class="card-arrow">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-            </div>
-        `;
-        dom.continueCard.onclick = () => openSurah(surahNumber, verse);
+        // Continue reading is now rendered inside the hero box
+        renderHeroContinue();
     }
 
     function renderStreak() {
         updateStreak();
-        dom.streakCount.textContent = state.streak.count;
-        if (state.streak.count > 0) {
-            dom.streakFlame.classList.add('active');
-        } else {
-            dom.streakFlame.classList.remove('active');
-        }
+        // Streak is now displayed as a stat in the hero box
+        renderHeroStats();
     }
 
     // Strip diacritics and normalize Arabic text for comparison
@@ -263,84 +619,48 @@
         return str.replace(/<[^>]+>/g, '');
     }
 
-    // ==========================================
-    // Tajweed Bracket Parser
-    // ==========================================
-    // The quran-tajweed API returns text with bracket notation:
-    //   [RULE_CODE][ARABIC_TEXT]  — color ARABIC_TEXT per RULE_CODE
-    //   [ARABIC_TEXT]             — display without coloring
-    // Rule codes: single Latin letter or letter:number (h:1468, m, n, o, p, etc.)
-
-    const TAJWEED_CLASS_MAP = {
-        h: 'ham_wasl',
-        l: 'laam_shamsiyah',
-        s: 'silent',
-        n: 'madda_normal',
-        m: 'madda_necessary',
-        o: 'madda_obligatory',
-        p: 'madda_permissible',
-        g: 'ghunnah',
-        i: 'ikhafa',
-        w: 'ikhafa_shafawi',
-        d: 'idghaam_ghunnah',
-        e: 'idghaam_no_ghunnah',
-        j: 'idghaam_mutajanisayn',
-        k: 'idghaam_mutaqaribayn',
-        q: 'iqlab',
-        r: 'qalqalah',
-        f: 'ikhafa',
-        u: 'ghunnah',
-    };
-
-    function isRuleCode(content) {
-        return /^[a-zA-Z]/.test(content);
-    }
-
+    // Parse tajweed bracket notation from the API into HTML <tajweed> elements.
+    // The AlQuran Cloud quran-tajweed edition returns nested brackets like:
+    //   [h:9421[ٱ]  [n[ـٰ]  [q[ق]
+    // Pass 1: replace [letter identifiers with opening <tajweed> tags
+    // Pass 2: replace remaining [ with "> and ] with </tajweed>
     function parseTajweedText(text) {
-        let result = '';
-        let i = 0;
-        let pendingRule = null;
+        const tagMap = {
+            'h': 'ham_wasl',
+            's': 'silent',
+            'l': 'laam_shamsiyah',
+            'n': 'madda_normal',
+            'p': 'madda_permissible',
+            'm': 'madda_necessary',
+            'q': 'qalqalah',
+            'o': 'madda_obligatory',
+            'c': 'ikhafa_shafawi',
+            'f': 'ikhafa',
+            'w': 'idghaam_shafawi',
+            'i': 'iqlab',
+            'a': 'idghaam_ghunnah',
+            'u': 'idghaam_no_ghunnah',
+            'd': 'idghaam_mutajanisayn',
+            'b': 'idghaam_mutaqaribayn',
+            'g': 'ghunnah',
+        };
 
-        while (i < text.length) {
-            if (text[i] === '[') {
-                const end = text.indexOf(']', i);
-                if (end === -1) {
-                    result += text[i];
-                    i++;
-                    continue;
-                }
-
-                const content = text.substring(i + 1, end);
-
-                if (isRuleCode(content)) {
-                    // This is a rule code — remember it for the next Arabic bracket
-                    pendingRule = content;
-                } else {
-                    // This is Arabic text — wrap with tajweed color if a rule is pending
-                    if (pendingRule) {
-                        const cls = TAJWEED_CLASS_MAP[pendingRule[0].toLowerCase()] || 'silent';
-                        result += `<tajweed class="${cls}">${content}</tajweed>`;
-                        pendingRule = null;
-                    } else {
-                        result += content;
-                    }
-                }
-
-                i = end + 1;
-            } else {
-                result += text[i];
-                i++;
-            }
+        // Pass 1: Replace [letter identifiers with <tajweed> opening tags.
+        // e.g. [h:9421[ٱ] → <tajweed class="ham_wasl" data-tajweed=":9421[ٱ]
+        let result = text;
+        for (const [letter, className] of Object.entries(tagMap)) {
+            const re = new RegExp('\\[' + letter, 'g');
+            result = result.replace(re, '<tajweed class="' + className + '" data-tajweed="');
         }
 
-        return result;
-    }
+        // Pass 2: Replace remaining [ with "> and ] with </tajweed>
+        // This closes the data-tajweed attribute and wraps the content.
+        // e.g. <tajweed class="ham_wasl" data-tajweed=":9421[ٱ]
+        //    → <tajweed class="ham_wasl" data-tajweed=":9421">ٱ</tajweed>
+        result = result.replace(/\[/g, '">');
+        result = result.replace(/\]/g, '</tajweed>');
 
-    // Remove bracket notation and rule codes, keep only Arabic text
-    function cleanTajweedText(text) {
-        return text.replace(/\[([^\]]*)\]/g, function(match, content) {
-            return isRuleCode(content) ? '' : content;
-        });
+        return result;
     }
 
     // Strip Bismillah from text that may contain HTML (tajweed)
@@ -410,13 +730,14 @@
             const isBookmarked = state.bookmarks.some(b => b.number === ayah.number);
             const translationText = translation.ayahs[i] ? translation.ayahs[i].text : '';
 
-            // Parse tajweed bracket notation → styled HTML
+            // Parse tajweed bracket notation into HTML, then strip Bismillah
             let verseText = isTajweed ? parseTajweedText(ayah.text) : ayah.text;
-
-            // Strip Bismillah from first verse if decorative Bismillah is shown
             if (i === 0 && showDecorativeBismillah) {
                 verseText = stripBismillahFromText(verseText, isTajweed);
             }
+            const arabicContent = isTajweed
+                ? `${verseText} <span class="verse-number">﴿${verseNum}﴾</span>`
+                : `${verseText} <span class="verse-number">﴿${verseNum}﴾</span>`;
 
             return `
                 <div class="verse" data-index="${i}" data-verse-number="${ayah.number}" data-verse-in-surah="${ayah.numberInSurah}">
@@ -425,17 +746,17 @@
                     </div>
                     ${showTranslation ? `<div class="verse-translation">${ayah.numberInSurah}. ${translationText}</div>` : ''}
                     <div class="verse-actions">
-                        <button class="verse-action-btn btn-play-verse" data-index="${i}" title="Play">
+                        <button class="verse-action-btn btn-play-verse" data-index="${i}" title="${t('play')}">
                             <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                            Play
+                            ${t('play')}
                         </button>
-                        <button class="verse-action-btn btn-bookmark-verse ${isBookmarked ? 'bookmarked' : ''}" data-number="${ayah.number}" data-index="${i}" title="Bookmark">
+                        <button class="verse-action-btn btn-bookmark-verse ${isBookmarked ? 'bookmarked' : ''}" data-number="${ayah.number}" data-index="${i}" title="${t('bookmark')}">
                             <svg viewBox="0 0 24 24" fill="${isBookmarked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
-                            ${isBookmarked ? 'Saved' : 'Save'}
+                            ${isBookmarked ? t('savedBtn') : t('save')}
                         </button>
-                        <button class="verse-action-btn btn-copy-verse" data-index="${i}" title="Copy">
+                        <button class="verse-action-btn btn-copy-verse" data-index="${i}" title="${t('copy')}">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-                            Copy
+                            ${t('copy')}
                         </button>
                     </div>
                 </div>
@@ -501,7 +822,7 @@
                 state.bookmarks.splice(idx, 1);
                 saveBookmarks();
                 renderBookmarks();
-                showToast('Bookmark removed');
+                showToast(t('bookmarkRemoved'));
             });
         });
     }
@@ -566,9 +887,7 @@
 
         // Render view-specific content
         if (viewName === 'home') {
-            renderHeroStats();
-            renderContinueReading();
-            renderStreak();
+            renderHero();
             renderRamadanCountdown();
             updateGoalDisplays();
         } else if (viewName === 'reader') {
@@ -586,7 +905,7 @@
         // Show loading state
         dom.versesContainer.innerHTML = `
             <div style="text-align:center;padding:3rem;color:var(--text-tertiary);">
-                <p>Loading surah...</p>
+                <p>${t('loadingSurah')}</p>
             </div>
         `;
 
@@ -637,8 +956,8 @@
         } catch (err) {
             dom.versesContainer.innerHTML = `
                 <div style="text-align:center;padding:3rem;color:var(--danger);">
-                    <p>Failed to load surah. Please check your connection and try again.</p>
-                    <button onclick="location.reload()" style="margin-top:1rem;padding:0.5rem 1rem;border:1px solid;border-radius:8px;cursor:pointer;background:transparent;color:inherit;">Retry</button>
+                    <p>${t('failedLoadSurah')}</p>
+                    <button onclick="location.reload()" style="margin-top:1rem;padding:0.5rem 1rem;border:1px solid;border-radius:8px;cursor:pointer;background:transparent;color:inherit;">${t('retry')}</button>
                 </div>
             `;
         }
@@ -777,17 +1096,17 @@
 
         if (existing >= 0) {
             state.bookmarks.splice(existing, 1);
-            showToast('Bookmark removed');
+            showToast(t('bookmarkRemoved'));
         } else {
             state.bookmarks.push({
                 number: arabic.number,
                 surahNumber: state.currentSurah.number,
                 surahName: state.currentSurah.englishName,
                 verseInSurah: arabic.numberInSurah,
-                arabic: state.settings.tajweed ? cleanTajweedText(arabic.text) : arabic.text,
+                arabic: state.settings.tajweed ? stripHTML(parseTajweedText(arabic.text)) : arabic.text,
                 translation: trans.text,
             });
-            showToast('Verse bookmarked');
+            showToast(t('verseBookmarked'));
         }
         saveBookmarks();
         renderVerses();
@@ -804,13 +1123,13 @@
     function copyVerse(index) {
         const arabic = state.currentVerses.arabic.ayahs[index];
         const trans = state.currentVerses.translation.ayahs[index];
-        const arabicText = state.settings.tajweed ? cleanTajweedText(arabic.text) : arabic.text;
+        const arabicText = state.settings.tajweed ? stripHTML(parseTajweedText(arabic.text)) : arabic.text;
         const text = `${arabicText}\n\n${trans.text}\n\n— ${state.currentSurah.englishName} ${arabic.numberInSurah}`;
 
         navigator.clipboard.writeText(text).then(() => {
-            showToast('Verse copied');
+            showToast(t('verseCopied'));
         }).catch(() => {
-            showToast('Failed to copy');
+            showToast(t('failedCopy'));
         });
     }
 
@@ -1045,7 +1364,7 @@
             updateReciteDisplay();
             if (state.timerData.reciteRemaining <= 0) {
                 stopReciteTimer();
-                showToast('Recitation goal complete!');
+                showToast(t('reciteGoalComplete'));
             }
             if (state.timerData.reciteRemaining % 10 === 0) saveTimers();
         }, 1000);
@@ -1072,7 +1391,7 @@
             updateListenDisplay();
             if (state.timerData.listenRemaining <= 0) {
                 stopListenTimer();
-                showToast('Listening goal complete!');
+                showToast(t('listenGoalComplete'));
             }
             if (state.timerData.listenRemaining % 10 === 0) saveTimers();
         }, 1000);
@@ -1233,7 +1552,7 @@
         $('#btn-audio-repeat').addEventListener('click', () => {
             state.audioState.repeat = !state.audioState.repeat;
             $('#btn-audio-repeat').classList.toggle('active', state.audioState.repeat);
-            showToast(state.audioState.repeat ? 'Repeat on' : 'Repeat off');
+            showToast(state.audioState.repeat ? t('repeatOn') : t('repeatOff'));
         });
 
         // Bookmark surah button in reader
@@ -1246,6 +1565,16 @@
         });
 
         // Settings toggles
+        $('#setting-language').addEventListener('change', (e) => {
+            state.settings.language = e.target.value;
+            saveSettings();
+            applyLanguage();
+            // Re-render dynamic content in current view
+            if (state.currentView === 'home') renderHero();
+            if (state.currentView === 'reader' && state.currentSurah) renderVerses();
+            if (state.currentView === 'bookmarks') renderBookmarks();
+        });
+
         $('#setting-dark-mode').addEventListener('change', (e) => {
             applyTheme(e.target.checked);
         });
@@ -1268,7 +1597,7 @@
         });
 
         $('#btn-reset').addEventListener('click', () => {
-            if (confirm('Are you sure you want to reset all progress, bookmarks, and settings?')) {
+            if (confirm(t('confirmReset'))) {
                 localStorage.removeItem('qc_bookmarks');
                 localStorage.removeItem('qc_progress');
                 localStorage.removeItem('qc_ramadan');
@@ -1330,10 +1659,12 @@
     async function init() {
         // Apply saved settings
         applyTheme(state.settings.darkMode);
+        applyLanguage();
         $('#setting-dark-mode').checked = state.settings.darkMode;
         $('#setting-translation').checked = state.settings.showTranslation;
         $('#setting-autoscroll').checked = state.settings.autoScroll;
         $('#setting-arabic-numbers').checked = state.settings.arabicNumbers;
+        $('#setting-language').value = state.settings.language || 'en';
         dom.selectReciter.value = state.settings.reciter;
         dom.selectTranslation.value = state.settings.translation;
         dom.fontSizeDisplay.textContent = state.fontSize;
@@ -1348,16 +1679,14 @@
         try {
             await loadSurahList();
             renderSurahList();
-            renderHeroStats();
-            renderContinueReading();
-            renderStreak();
+            renderHero();
             renderRamadanCountdown();
             updateGoalDisplays();
         } catch (err) {
             dom.surahList.innerHTML = `
                 <div style="text-align:center;padding:2rem;color:var(--danger);">
-                    <p>Failed to load Quran data. Please check your internet connection.</p>
-                    <button onclick="location.reload()" style="margin-top:1rem;padding:0.5rem 1rem;border:1px solid;border-radius:8px;cursor:pointer;background:transparent;color:inherit;">Retry</button>
+                    <p>${t('failedLoadData')}</p>
+                    <button onclick="location.reload()" style="margin-top:1rem;padding:0.5rem 1rem;border:1px solid;border-radius:8px;cursor:pointer;background:transparent;color:inherit;">${t('retry')}</button>
                 </div>
             `;
         }
@@ -1415,7 +1744,7 @@
                 deferredInstallPrompt.prompt();
                 const { outcome } = await deferredInstallPrompt.userChoice;
                 if (outcome === 'accepted') {
-                    showToast('App installed!');
+                    showToast(t('appInstalled'));
                 }
                 deferredInstallPrompt = null;
             }
