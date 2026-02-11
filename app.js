@@ -233,20 +233,31 @@
         }
     }
 
+    // Bismillah pattern to strip from first verse when decorative Bismillah is shown
+    const BISMILLAH_PATTERN = /^بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ\s*/;
+
     function renderVerses() {
         const { arabic, translation, audio } = state.currentVerses;
         const showTranslation = state.settings.showTranslation;
         const useArabicNums = state.settings.arabicNumbers;
+        const surahNum = state.currentSurah ? state.currentSurah.number : 0;
+        const showDecoativeBismillah = surahNum !== 1 && surahNum !== 9;
 
         dom.versesContainer.innerHTML = arabic.ayahs.map((ayah, i) => {
             const verseNum = useArabicNums ? toArabicNumber(ayah.numberInSurah) : ayah.numberInSurah;
             const isBookmarked = state.bookmarks.some(b => b.number === ayah.number);
             const translationText = translation.ayahs[i] ? translation.ayahs[i].text : '';
 
+            // Strip Bismillah from first verse if decorative Bismillah is shown
+            let verseText = ayah.text;
+            if (i === 0 && showDecoativeBismillah) {
+                verseText = verseText.replace(BISMILLAH_PATTERN, '').trim();
+            }
+
             return `
                 <div class="verse" data-index="${i}" data-verse-number="${ayah.number}" data-verse-in-surah="${ayah.numberInSurah}">
                     <div class="verse-arabic" style="font-size: ${state.fontSize}px">
-                        ${ayah.text} <span class="verse-number">﴿${verseNum}﴾</span>
+                        ${verseText} <span class="verse-number">﴿${verseNum}﴾</span>
                     </div>
                     ${showTranslation ? `<div class="verse-translation">${ayah.numberInSurah}. ${translationText}</div>` : ''}
                     <div class="verse-actions">
