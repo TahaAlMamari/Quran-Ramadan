@@ -53,6 +53,66 @@
         { juz: 30, start: '78:1', end: '114:6', label: "An-Naba' — An-Nas" },
     ];
 
+    // ==========================================
+    // Juz Utility Functions
+    // ==========================================
+
+    function parseRef(ref) {
+        const [surah, verse] = ref.split(':').map(Number);
+        return { surah, verse };
+    }
+
+    function getJuzForSurah(surahNumber) {
+        const juzIndices = [];
+        for (let i = 0; i < JUZ_DATA.length; i++) {
+            const start = parseRef(JUZ_DATA[i].start);
+            const end = parseRef(JUZ_DATA[i].end);
+            if (surahNumber >= start.surah && surahNumber <= end.surah) {
+                juzIndices.push(i);
+            }
+        }
+        return juzIndices;
+    }
+
+    function getSurahsInJuz(juzIndex) {
+        const juz = JUZ_DATA[juzIndex];
+        const start = parseRef(juz.start);
+        const end = parseRef(juz.end);
+        const surahs = [];
+        for (let s = start.surah; s <= end.surah; s++) {
+            surahs.push(s);
+        }
+        return surahs;
+    }
+
+    function calculateJuzProgress(juzIndex) {
+        const surahs = getSurahsInJuz(juzIndex);
+        let readCount = 0;
+        for (const s of surahs) {
+            if (state.readingProgress[s]) readCount++;
+        }
+        return surahs.length > 0 ? Math.round((readCount / surahs.length) * 100) : 0;
+    }
+
+    function getTodaysJuz() {
+        const info = getRamadanInfo();
+        if (info.status === 'during') {
+            return info.dayOf - 1;
+        }
+        for (let i = 0; i < 30; i++) {
+            if (!state.ramadanPlan.completedDays.includes(i)) return i;
+        }
+        return 0;
+    }
+
+    function getNextUnreadInJuz(juzIndex) {
+        const surahs = getSurahsInJuz(juzIndex);
+        for (const s of surahs) {
+            if (!state.readingProgress[s]) return s;
+        }
+        return surahs[0];
+    }
+
     // Ramadan dates (approximate Gregorian start/end for each year)
     const RAMADAN_DATES = [
         { start: new Date(2025, 1, 28), end: new Date(2025, 2, 30) },
@@ -185,6 +245,21 @@
             days_s: 'days',
             ramadanMubarak: 'Ramadan Mubarak!',
             remaining: 'remaining',
+            // Ramadan Auto-tracking
+            juzCompleted: 'Juz {n} completed!',
+            todaysReading: "Today's Reading",
+            startReading: 'Start Reading',
+            continueJuz: 'Continue',
+            readProgress: 'read',
+            milestone10: 'One third done! 10 Juz completed!',
+            milestoneHalfway: 'Halfway there! 15 Juz completed!',
+            milestone20: 'Two thirds done! 20 Juz completed!',
+            milestoneComplete: 'Masha Allah! Quran Khatma complete!',
+            milestoneDismiss: 'Continue',
+            todaysJuz: "Today's Juz",
+            suggested: 'Next',
+            ofJuz: 'of Juz',
+            autoCompleted: 'Auto-completed',
         },
         ar: {
             // Header & Nav
@@ -304,6 +379,21 @@
             days_s: 'أيام',
             ramadanMubarak: 'رمضان مبارك!',
             remaining: 'متبقي',
+            // Ramadan Auto-tracking
+            juzCompleted: 'تم إكمال الجزء {n}!',
+            todaysReading: 'قراءة اليوم',
+            startReading: 'ابدأ القراءة',
+            continueJuz: 'أكمل',
+            readProgress: 'مقروء',
+            milestone10: 'ثلث القرآن! ١٠ أجزاء مكتملة!',
+            milestoneHalfway: 'نصف الطريق! ١٥ جزءًا مكتملاً!',
+            milestone20: 'ثلثا القرآن! ٢٠ جزءًا مكتملاً!',
+            milestoneComplete: 'ما شاء الله! اكتملت ختمة القرآن!',
+            milestoneDismiss: 'متابعة',
+            todaysJuz: 'جزء اليوم',
+            suggested: 'التالي',
+            ofJuz: 'من الجزء',
+            autoCompleted: 'مكتمل تلقائيًا',
         },
     };
 
@@ -460,16 +550,28 @@
             return matchFilter && matchSearch;
         });
 
-        dom.surahList.innerHTML = surahs.map(s => `
-            <div class="surah-card" data-surah="${s.number}">
-                <div class="surah-number">${s.number}</div>
-                <div class="surah-info">
-                    <div class="surah-name-en">${s.englishName}</div>
-                    <div class="surah-meta">${s.englishNameTranslation} · ${s.numberOfAyahs} ${t('verses')} · ${s.revelationType === 'Meccan' ? t('meccan') : t('medinan')}</div>
+        const todaysJuz = getTodaysJuz();
+        const todaysSurahs = getSurahsInJuz(todaysJuz);
+        const info = getRamadanInfo();
+        const juzLabel = info.status === 'during' ? t('todaysJuz') : t('suggested');
+
+        dom.surahList.innerHTML = surahs.map(s => {
+            const isInTodaysJuz = todaysSurahs.includes(s.number);
+            const isRead = state.readingProgress[s.number];
+            return `
+                <div class="surah-card ${isInTodaysJuz ? 'todays-juz' : ''}" data-surah="${s.number}">
+                    <div class="surah-number">${s.number}</div>
+                    <div class="surah-info">
+                        <div class="surah-name-en">
+                            ${s.englishName}
+                            ${isInTodaysJuz ? `<span class="surah-juz-badge">${juzLabel}</span>` : ''}
+                        </div>
+                        <div class="surah-meta">${s.englishNameTranslation} · ${s.numberOfAyahs} ${t('verses')} · ${s.revelationType === 'Meccan' ? t('meccan') : t('medinan')}${isRead && isInTodaysJuz ? ' · &#10003;' : ''}</div>
+                    </div>
+                    <div class="surah-name-ar">${s.name}</div>
                 </div>
-                <div class="surah-name-ar">${s.name}</div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
 
         // Click handlers
         dom.surahList.querySelectorAll('.surah-card').forEach(card => {
@@ -829,6 +931,7 @@
 
     function renderRamadanPlan() {
         const completed = state.ramadanPlan.completedDays || [];
+        if (!state.ramadanPlan.juzProgress) state.ramadanPlan.juzProgress = {};
         const totalDone = completed.length;
         const percent = Math.round((totalDone / 30) * 100);
 
@@ -841,29 +944,65 @@
         dom.statDaysLeft.textContent = 30 - totalDone;
 
         // Today's reading estimate
-        const todayIdx = completed.length;
-        dom.statPagesToday.textContent = todayIdx < 30 ? '~20' : '0';
+        const todayIdx = getTodaysJuz();
+        const todayProgress = calculateJuzProgress(todayIdx);
+        dom.statPagesToday.textContent = todayProgress + '%';
+
+        const info = getRamadanInfo();
+        const currentJuz = getTodaysJuz();
 
         dom.ramadanDays.innerHTML = JUZ_DATA.map((juz, i) => {
             const isDone = completed.includes(i);
+            const progress = state.ramadanPlan.juzProgress[i] || calculateJuzProgress(i);
+            const isToday = i === currentJuz;
+            const hasProgress = progress > 0 && !isDone;
+
             return `
-                <div class="day-card ${isDone ? 'completed' : ''}" data-day="${i}">
+                <div class="day-card ${isDone ? 'completed' : ''} ${isToday ? 'today' : ''} ${hasProgress ? 'in-progress' : ''}" data-day="${i}">
                     <div class="day-number">${i + 1}</div>
                     <div class="day-info">
-                        <div class="day-juz">Juz ${juz.juz}</div>
+                        <div class="day-juz-row">
+                            <span class="day-juz">${t('juz')} ${juz.juz}</span>
+                            ${isToday ? `<span class="day-today-badge">${info.status === 'during' ? t('todaysReading') : t('suggested')}</span>` : ''}
+                        </div>
                         <div class="day-range">${juz.label}</div>
+                        <div class="day-progress-bar">
+                            <div class="day-progress-fill ${isDone ? 'done' : ''}" style="width: ${isDone ? 100 : progress}%"></div>
+                        </div>
                     </div>
-                    <div class="day-check">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    <div class="day-actions">
+                        <button class="day-read-btn" data-day="${i}" title="${isDone ? t('startReading') : progress > 0 ? t('continueJuz') : t('startReading')}">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+                        </button>
+                        <button class="day-check-btn ${isDone ? 'checked' : ''}" data-day="${i}" title="${isDone ? 'Mark incomplete' : 'Mark complete'}">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                        </button>
                     </div>
                 </div>
             `;
         }).join('');
 
+        // Read button opens the Juz for reading
+        dom.ramadanDays.querySelectorAll('.day-read-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openJuzReading(parseInt(btn.dataset.day));
+            });
+        });
+
+        // Check button toggles manual completion
+        dom.ramadanDays.querySelectorAll('.day-check-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleRamadanDay(parseInt(btn.dataset.day));
+            });
+        });
+
+        // Card body also opens reading
         dom.ramadanDays.querySelectorAll('.day-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const day = parseInt(card.dataset.day);
-                toggleRamadanDay(day);
+            card.addEventListener('click', (e) => {
+                if (e.target.closest('.day-read-btn') || e.target.closest('.day-check-btn')) return;
+                openJuzReading(parseInt(card.dataset.day));
             });
         });
     }
@@ -930,6 +1069,12 @@
             // Track reading
             state.readingProgress[number] = true;
             localStorage.setItem('qc_progress', JSON.stringify(state.readingProgress));
+
+            // Auto-track Ramadan plan progress
+            checkAndUpdateRamadanProgress(number);
+
+            // Show Ramadan banner in reader
+            renderReaderRamadanBanner(number);
 
             // Save last read
             localStorage.setItem('qc_last_read', JSON.stringify({
@@ -1188,6 +1333,102 @@
         }
         localStorage.setItem('qc_ramadan', JSON.stringify(state.ramadanPlan));
         renderRamadanPlan();
+    }
+
+    function checkAndUpdateRamadanProgress(surahNumber) {
+        const juzIndices = getJuzForSurah(surahNumber);
+        let newCompletions = [];
+
+        if (!state.ramadanPlan.juzProgress) {
+            state.ramadanPlan.juzProgress = {};
+        }
+
+        for (const juzIdx of juzIndices) {
+            const progress = calculateJuzProgress(juzIdx);
+            state.ramadanPlan.juzProgress[juzIdx] = progress;
+
+            if (progress >= 100 && !state.ramadanPlan.completedDays.includes(juzIdx)) {
+                state.ramadanPlan.completedDays.push(juzIdx);
+                newCompletions.push(juzIdx + 1);
+            }
+        }
+
+        localStorage.setItem('qc_ramadan', JSON.stringify(state.ramadanPlan));
+
+        for (const juzNum of newCompletions) {
+            showToast(t('juzCompleted').replace('{n}', juzNum));
+        }
+
+        if (newCompletions.length > 0) {
+            checkMilestones();
+        }
+    }
+
+    function checkMilestones() {
+        const completed = state.ramadanPlan.completedDays.length;
+        const milestones = { 10: 'milestone10', 15: 'milestoneHalfway', 20: 'milestone20', 30: 'milestoneComplete' };
+        if (milestones[completed]) {
+            setTimeout(() => showMilestone(t(milestones[completed])), 800);
+        }
+    }
+
+    function showMilestone(message) {
+        document.querySelectorAll('.milestone-overlay').forEach(m => m.remove());
+        const overlay = document.createElement('div');
+        overlay.className = 'milestone-overlay';
+        overlay.innerHTML = `
+            <div class="milestone-card">
+                <div class="milestone-stars">&#9733; &#9733; &#9733;</div>
+                <div class="milestone-message">${message}</div>
+                <button class="milestone-btn">${t('milestoneDismiss')}</button>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        overlay.querySelector('.milestone-btn').addEventListener('click', () => overlay.remove());
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+        setTimeout(() => { if (overlay.parentNode) overlay.remove(); }, 6000);
+    }
+
+    function renderReaderRamadanBanner(surahNumber) {
+        const banner = $('#reader-ramadan-banner');
+        if (!banner) return;
+
+        const juzIndices = getJuzForSurah(surahNumber);
+        if (juzIndices.length === 0) {
+            banner.classList.add('hidden');
+            return;
+        }
+
+        const juzIdx = juzIndices[0];
+        const juz = JUZ_DATA[juzIdx];
+        if (!state.ramadanPlan.juzProgress) state.ramadanPlan.juzProgress = {};
+        const progress = state.ramadanPlan.juzProgress[juzIdx] || calculateJuzProgress(juzIdx);
+        const isCompleted = state.ramadanPlan.completedDays.includes(juzIdx);
+        const todaysJuz = getTodaysJuz();
+        const isToday = juzIdx === todaysJuz;
+
+        banner.classList.remove('hidden');
+        banner.innerHTML = `
+            <div class="ramadan-banner-content">
+                <div class="ramadan-banner-left">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" opacity="0.7"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                    <span class="ramadan-banner-juz">${t('juz')} ${juz.juz}</span>
+                    ${isToday ? `<span class="ramadan-banner-today">${t('todaysReading')}</span>` : ''}
+                    ${isCompleted ? `<span class="ramadan-banner-done">&#10003;</span>` : ''}
+                </div>
+                <div class="ramadan-banner-right">
+                    <div class="ramadan-banner-bar">
+                        <div class="ramadan-banner-fill ${isCompleted ? 'completed' : ''}" style="width: ${progress}%"></div>
+                    </div>
+                    <span class="ramadan-banner-pct">${progress}%</span>
+                </div>
+            </div>
+        `;
+    }
+
+    function openJuzReading(juzIndex) {
+        const nextSurah = getNextUnreadInJuz(juzIndex);
+        openSurah(nextSurah);
     }
 
     // ==========================================
