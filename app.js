@@ -263,6 +263,86 @@
         return str.replace(/<[^>]+>/g, '');
     }
 
+    // ==========================================
+    // Tajweed Bracket Parser
+    // ==========================================
+    // The quran-tajweed API returns text with bracket notation:
+    //   [RULE_CODE][ARABIC_TEXT]  — color ARABIC_TEXT per RULE_CODE
+    //   [ARABIC_TEXT]             — display without coloring
+    // Rule codes: single Latin letter or letter:number (h:1468, m, n, o, p, etc.)
+
+    const TAJWEED_CLASS_MAP = {
+        h: 'ham_wasl',
+        l: 'laam_shamsiyah',
+        s: 'silent',
+        n: 'madda_normal',
+        m: 'madda_necessary',
+        o: 'madda_obligatory',
+        p: 'madda_permissible',
+        g: 'ghunnah',
+        i: 'ikhafa',
+        w: 'ikhafa_shafawi',
+        d: 'idghaam_ghunnah',
+        e: 'idghaam_no_ghunnah',
+        j: 'idghaam_mutajanisayn',
+        k: 'idghaam_mutaqaribayn',
+        q: 'iqlab',
+        r: 'qalqalah',
+        f: 'ikhafa',
+        u: 'ghunnah',
+    };
+
+    function isRuleCode(content) {
+        return /^[a-zA-Z]/.test(content);
+    }
+
+    function parseTajweedText(text) {
+        let result = '';
+        let i = 0;
+        let pendingRule = null;
+
+        while (i < text.length) {
+            if (text[i] === '[') {
+                const end = text.indexOf(']', i);
+                if (end === -1) {
+                    result += text[i];
+                    i++;
+                    continue;
+                }
+
+                const content = text.substring(i + 1, end);
+
+                if (isRuleCode(content)) {
+                    // This is a rule code — remember it for the next Arabic bracket
+                    pendingRule = content;
+                } else {
+                    // This is Arabic text — wrap with tajweed color if a rule is pending
+                    if (pendingRule) {
+                        const cls = TAJWEED_CLASS_MAP[pendingRule[0].toLowerCase()] || 'silent';
+                        result += `<tajweed class="${cls}">${content}</tajweed>`;
+                        pendingRule = null;
+                    } else {
+                        result += content;
+                    }
+                }
+
+                i = end + 1;
+            } else {
+                result += text[i];
+                i++;
+            }
+        }
+
+        return result;
+    }
+
+    // Remove bracket notation and rule codes, keep only Arabic text
+    function cleanTajweedText(text) {
+        return text.replace(/\[([^\]]*)\]/g, function(match, content) {
+            return isRuleCode(content) ? '' : content;
+        });
+    }
+
     // Strip Bismillah from text that may contain HTML (tajweed)
     function stripBismillahFromText(text, hasTags) {
         const plain = hasTags ? stripHTML(text) : text;
@@ -330,17 +410,13 @@
             const isBookmarked = state.bookmarks.some(b => b.number === ayah.number);
             const translationText = translation.ayahs[i] ? translation.ayahs[i].text : '';
 
+            // Parse tajweed bracket notation → styled HTML
+            let verseText = isTajweed ? parseTajweedText(ayah.text) : ayah.text;
+
             // Strip Bismillah from first verse if decorative Bismillah is shown
-            let verseText = ayah.text;
             if (i === 0 && showDecorativeBismillah) {
                 verseText = stripBismillahFromText(verseText, isTajweed);
             }
-
-            // For tajweed text (contains HTML), we use innerHTML directly.
-            // For plain text, we escape to be safe.
-            const arabicContent = isTajweed
-                ? `${verseText} <span class="verse-number">﴿${verseNum}﴾</span>`
-                : `${verseText} <span class="verse-number">﴿${verseNum}﴾</span>`;
 
             return `
                 <div class="verse" data-index="${i}" data-verse-number="${ayah.number}" data-verse-in-surah="${ayah.numberInSurah}">
@@ -708,7 +784,7 @@
                 surahNumber: state.currentSurah.number,
                 surahName: state.currentSurah.englishName,
                 verseInSurah: arabic.numberInSurah,
-                arabic: state.settings.tajweed ? stripHTML(arabic.text) : arabic.text,
+                arabic: state.settings.tajweed ? cleanTajweedText(arabic.text) : arabic.text,
                 translation: trans.text,
             });
             showToast('Verse bookmarked');
@@ -728,7 +804,7 @@
     function copyVerse(index) {
         const arabic = state.currentVerses.arabic.ayahs[index];
         const trans = state.currentVerses.translation.ayahs[index];
-        const arabicText = state.settings.tajweed ? stripHTML(arabic.text) : arabic.text;
+        const arabicText = state.settings.tajweed ? cleanTajweedText(arabic.text) : arabic.text;
         const text = `${arabicText}\n\n${trans.text}\n\n— ${state.currentSurah.englishName} ${arabic.numberInSurah}`;
 
         navigator.clipboard.writeText(text).then(() => {
