@@ -263,6 +263,43 @@
         return str.replace(/<[^>]+>/g, '');
     }
 
+    // Parse tajweed bracket notation from the API into HTML <tajweed> elements.
+    // The AlQuran Cloud quran-tajweed edition returns text like:
+    //   [h:9421]ٱ[/h]  [n]ـٰ[/n]  [q]ق[/q]
+    // which must be converted to styled <tajweed> elements for CSS to color them.
+    function parseTajweedText(text) {
+        const tagMap = {
+            'h': 'ham_wasl',
+            's': 'silent',
+            'l': 'laam_shamsiyah',
+            'n': 'madda_normal',
+            'p': 'madda_permissible',
+            'm': 'madda_necessary',
+            'q': 'qalqalah',
+            'o': 'madda_obligatory',
+            'c': 'ikhafa_shafawi',
+            'f': 'ikhafa',
+            'w': 'idghaam_shafawi',
+            'i': 'iqlab',
+            'a': 'idghaam_ghunnah',
+            'u': 'idghaam_no_ghunnah',
+            'd': 'idghaam_mutajanisayn',
+            'b': 'idghaam_mutaqaribayn',
+            'g': 'ghunnah',
+        };
+
+        // Replace opening tags: [x] or [x:123]
+        let result = text.replace(/\[([a-z])(?::\d+)?\]/g, (match, letter) => {
+            const className = tagMap[letter];
+            return className ? `<tajweed class="${className}">` : match;
+        });
+
+        // Replace closing tags: [/x]
+        result = result.replace(/\[\/[a-z]\]/g, '</tajweed>');
+
+        return result;
+    }
+
     // Strip Bismillah from text that may contain HTML (tajweed)
     function stripBismillahFromText(text, hasTags) {
         const plain = hasTags ? stripHTML(text) : text;
@@ -330,14 +367,11 @@
             const isBookmarked = state.bookmarks.some(b => b.number === ayah.number);
             const translationText = translation.ayahs[i] ? translation.ayahs[i].text : '';
 
-            // Strip Bismillah from first verse if decorative Bismillah is shown
-            let verseText = ayah.text;
+            // Parse tajweed bracket notation into HTML, then strip Bismillah
+            let verseText = isTajweed ? parseTajweedText(ayah.text) : ayah.text;
             if (i === 0 && showDecorativeBismillah) {
                 verseText = stripBismillahFromText(verseText, isTajweed);
             }
-
-            // For tajweed text (contains HTML), we use innerHTML directly.
-            // For plain text, we escape to be safe.
             const arabicContent = isTajweed
                 ? `${verseText} <span class="verse-number">﴿${verseNum}﴾</span>`
                 : `${verseText} <span class="verse-number">﴿${verseNum}﴾</span>`;
@@ -708,7 +742,7 @@
                 surahNumber: state.currentSurah.number,
                 surahName: state.currentSurah.englishName,
                 verseInSurah: arabic.numberInSurah,
-                arabic: state.settings.tajweed ? stripHTML(arabic.text) : arabic.text,
+                arabic: state.settings.tajweed ? stripHTML(parseTajweedText(arabic.text)) : arabic.text,
                 translation: trans.text,
             });
             showToast('Verse bookmarked');
@@ -728,7 +762,7 @@
     function copyVerse(index) {
         const arabic = state.currentVerses.arabic.ayahs[index];
         const trans = state.currentVerses.translation.ayahs[index];
-        const arabicText = state.settings.tajweed ? stripHTML(arabic.text) : arabic.text;
+        const arabicText = state.settings.tajweed ? stripHTML(parseTajweedText(arabic.text)) : arabic.text;
         const text = `${arabicText}\n\n${trans.text}\n\n— ${state.currentSurah.englishName} ${arabic.numberInSurah}`;
 
         navigator.clipboard.writeText(text).then(() => {
