@@ -1,0 +1,44 @@
+{
+  "name": "Quran Companion — Ramadan Edition",
+  "short_name": "Quran",
+  "description": "Beautiful Quran recitation app with audio, translations, bookmarks, and Ramadan reading plan.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0d6b3f",
+  "background_color": "#f8f5f0",
+  "icons": [
+    {
+      "src": "icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["education", "lifestyle"],
+  "shortcuts": [
+    {
+      "name": "Bookmarks",
+      "url": "./index.html#bookmarks",
+      "icons": [{ "src": "icons/icon-192.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Ramadan Plan",
+      "url": "./index.html#ramadan",
+      "icons": [{ "src": "icons/icon-192.svg", "sizes": "192x192" }]
+    }
+  ]
+}

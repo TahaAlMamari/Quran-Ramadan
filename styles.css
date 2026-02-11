@@ -1976,8 +1976,125 @@ select:focus:not(:focus-visible) {
     color: white;
 }
 
+/* ==========================================
+   PWA — Native App Polish
+   ========================================== */
+
+/* Prevent pull-to-refresh & overscroll bounce */
+html {
+    overscroll-behavior-y: contain;
+}
+
+/* Safe area insets for notched devices */
+body {
+    padding-top: env(safe-area-inset-top);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+}
+
+.audio-player {
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Disable text selection on interactive elements for native feel */
+.header, .icon-btn, .surah-card, .filter-tab, .goal-btn,
+.nav-btn, .audio-btn, .day-card, .bookmark-card, .continue-card,
+.install-banner, .toggle, .small-btn, .danger-btn {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Tap highlight — subtle instead of browser default */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Smooth momentum scrolling */
+.main-content, .surah-list, .verses-container, .bookmarks-list, .ramadan-days {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Standalone mode — adjust header when there's no browser chrome */
+@media (display-mode: standalone) {
+    .header {
+        padding-top: env(safe-area-inset-top);
+    }
+
+    body {
+        padding-top: 0;
+    }
+}
+
+/* Install banner */
+.install-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    padding-bottom: calc(0.85rem + env(safe-area-inset-bottom));
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    animation: slideUp 0.35s ease-out;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+.install-banner-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.install-banner-text strong {
+    font-size: 0.88rem;
+    color: var(--text-primary);
+}
+
+.install-banner-text span {
+    font-size: 0.73rem;
+    color: var(--text-tertiary);
+}
+
+.install-banner-btn {
+    padding: 0.5rem 1.1rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.82rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+}
+
+.install-banner-btn:active {
+    opacity: 0.8;
+}
+
+.install-banner-close {
+    background: none;
+    border: none;
+    color: var(--text-tertiary);
+    font-size: 1.3rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    line-height: 1;
+}
+
 /* Print */
 @media print {
-    .header, .audio-player, .search-bar, .reader-controls, .verse-actions, .surah-nav, .reader-timer-bar { display: none; }
+    .header, .audio-player, .search-bar, .reader-controls, .verse-actions, .surah-nav, .reader-timer-bar, .install-banner { display: none; }
     .verse { break-inside: avoid; }
 }

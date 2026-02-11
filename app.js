@@ -1220,13 +1220,80 @@
             dom.loadingScreen.classList.add('fade-out');
             dom.app.classList.remove('hidden');
             setTimeout(() => dom.loadingScreen.remove(), 500);
+            handleHashRoute();
         }, 1600);
     }
 
+    // ==========================================
+    // PWA — Service Worker & Install Prompt
+    // ==========================================
+
+    let deferredInstallPrompt = null;
+
+    function registerServiceWorker() {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js').catch(() => {});
+        }
+    }
+
+    // Capture the install prompt for later use
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+        showInstallBanner();
+    });
+
+    function showInstallBanner() {
+        // Don't show if already in standalone mode
+        if (window.matchMedia('(display-mode: standalone)').matches) return;
+        if (navigator.standalone) return;
+
+        // Remove existing
+        document.querySelectorAll('.install-banner').forEach(b => b.remove());
+
+        const banner = document.createElement('div');
+        banner.className = 'install-banner';
+        banner.innerHTML = `
+            <div class="install-banner-text">
+                <strong>Install Quran Companion</strong>
+                <span>Add to home screen for the full experience</span>
+            </div>
+            <button class="install-banner-btn" id="btn-install">Install</button>
+            <button class="install-banner-close" id="btn-install-dismiss">&times;</button>
+        `;
+        document.body.appendChild(banner);
+
+        document.getElementById('btn-install').addEventListener('click', async () => {
+            if (deferredInstallPrompt) {
+                deferredInstallPrompt.prompt();
+                const { outcome } = await deferredInstallPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    showToast('App installed!');
+                }
+                deferredInstallPrompt = null;
+            }
+            banner.remove();
+        });
+
+        document.getElementById('btn-install-dismiss').addEventListener('click', () => {
+            banner.remove();
+        });
+    }
+
+    // Handle URL hash for shortcuts
+    function handleHashRoute() {
+        const hash = location.hash.replace('#', '');
+        if (hash === 'bookmarks') showView('bookmarks');
+        else if (hash === 'ramadan') showView('ramadan');
+    }
+
+    window.addEventListener('hashchange', handleHashRoute);
+
     // Start the app
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', () => { init(); registerServiceWorker(); });
     } else {
         init();
+        registerServiceWorker();
     }
 })();
