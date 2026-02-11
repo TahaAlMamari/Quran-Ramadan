@@ -53,6 +53,16 @@
         { juz: 30, start: '78:1', end: '114:6', label: "An-Naba' — An-Nas" },
     ];
 
+    // Ramadan dates (approximate Gregorian start/end for each year)
+    const RAMADAN_DATES = [
+        { start: new Date(2025, 1, 28), end: new Date(2025, 2, 30) },
+        { start: new Date(2026, 1, 17), end: new Date(2026, 2, 19) },
+        { start: new Date(2027, 1, 7),  end: new Date(2027, 2, 9) },
+        { start: new Date(2028, 0, 27), end: new Date(2028, 1, 25) },
+        { start: new Date(2029, 0, 16), end: new Date(2029, 1, 14) },
+        { start: new Date(2030, 0, 5),  end: new Date(2030, 1, 3) },
+    ];
+
     // ==========================================
     // State
     // ==========================================
@@ -69,6 +79,8 @@
         settings: JSON.parse(localStorage.getItem('qc_settings') || '{}'),
         audioState: { playing: false, currentIndex: 0, repeat: false },
         fontSize: parseInt(localStorage.getItem('qc_fontsize') || '28'),
+        goals: JSON.parse(localStorage.getItem('qc_goals') || '{"reciteMinutes":30,"listenMinutes":15}'),
+        timerData: JSON.parse(localStorage.getItem('qc_timers') || '{"reciteRemaining":null,"listenRemaining":null,"date":null}'),
     };
 
     // Default settings
@@ -121,6 +133,10 @@
 
     let audioEl = new Audio();
     audioEl.preload = 'auto';
+
+    // Timer intervals
+    let reciteInterval = null;
+    let listenInterval = null;
 
     // ==========================================
     // API Layer
@@ -414,11 +430,20 @@
         // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
+        // Stop recite timer when leaving reader
+        if (viewName !== 'reader') {
+            stopReciteTimer();
+        }
+
         // Render view-specific content
         if (viewName === 'home') {
             renderHeroStats();
             renderContinueReading();
             renderStreak();
+            renderRamadanCountdown();
+            updateGoalDisplays();
+        } else if (viewName === 'reader') {
+            showTimerBar();
         } else if (viewName === 'bookmarks') {
             renderBookmarks();
         } else if (viewName === 'ramadan') {
@@ -517,6 +542,13 @@
 
         // Highlight verse
         highlightVerse(index);
+
+        // Start listening timer
+        startListenTimer();
+        const lt = $('#listen-timer');
+        if (lt && state.timerData.listenRemaining > 0) lt.classList.remove('hidden');
+        const bar = $('#reader-timer-bar');
+        if (bar) bar.classList.remove('hidden');
     }
 
     function togglePlayPause() {
@@ -524,10 +556,12 @@
             audioEl.play();
             state.audioState.playing = true;
             updatePlayPauseIcon(true);
+            startListenTimer();
         } else {
             audioEl.pause();
             state.audioState.playing = false;
             updatePlayPauseIcon(false);
+            stopListenTimer();
         }
     }
 
@@ -559,6 +593,7 @@
         dom.audioPlayer.classList.add('hidden');
         updatePlayPauseIcon(false);
         clearHighlights();
+        stopListenTimer();
     }
 
     function highlightVerse(index) {
@@ -750,6 +785,217 @@
     }
 
     // ==========================================
+    // Ramadan Countdown
+    // ==========================================
+
+    function getRamadanInfo() {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        for (const ramadan of RAMADAN_DATES) {
+            const start = new Date(ramadan.start);
+            const end = new Date(ramadan.end);
+            start.setHours(0, 0, 0, 0);
+            end.setHours(0, 0, 0, 0);
+
+            if (today >= start && today <= end) {
+                const dayOf = Math.floor((today - start) / 86400000) + 1;
+                const daysLeft = Math.ceil((end - today) / 86400000);
+                return { status: 'during', dayOf, daysLeft };
+            }
+
+            if (today < start) {
+                const daysUntil = Math.ceil((start - today) / 86400000);
+                return { status: 'before', daysUntil };
+            }
+        }
+        return { status: 'unknown' };
+    }
+
+    function renderRamadanCountdown() {
+        const el = $('#ramadan-countdown');
+        const info = getRamadanInfo();
+
+        if (info.status === 'before') {
+            el.classList.remove('hidden');
+            el.innerHTML = `
+                <div class="countdown-card countdown-before">
+                    <div class="countdown-moon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                    </div>
+                    <div class="countdown-text">
+                        <div class="countdown-label">Ramadan begins in</div>
+                        <div class="countdown-value">${info.daysUntil} day${info.daysUntil !== 1 ? 's' : ''}</div>
+                    </div>
+                </div>
+            `;
+        } else if (info.status === 'during') {
+            el.classList.remove('hidden');
+            el.innerHTML = `
+                <div class="countdown-card countdown-during">
+                    <div class="countdown-moon active">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                    </div>
+                    <div class="countdown-text">
+                        <div class="countdown-label">Ramadan Mubarak! Day ${info.dayOf}</div>
+                        <div class="countdown-value">${info.daysLeft} day${info.daysLeft !== 1 ? 's' : ''} remaining</div>
+                    </div>
+                </div>
+            `;
+        } else {
+            el.classList.add('hidden');
+        }
+    }
+
+    // ==========================================
+    // Daily Goals & Timers
+    // ==========================================
+
+    function saveGoals() {
+        localStorage.setItem('qc_goals', JSON.stringify(state.goals));
+    }
+
+    function saveTimers() {
+        localStorage.setItem('qc_timers', JSON.stringify(state.timerData));
+    }
+
+    function initTimers() {
+        const today = getToday();
+        if (state.timerData.date !== today) {
+            state.timerData = {
+                reciteRemaining: state.goals.reciteMinutes * 60,
+                listenRemaining: state.goals.listenMinutes * 60,
+                date: today,
+            };
+            saveTimers();
+        }
+    }
+
+    function formatTimer(seconds) {
+        const s = Math.max(0, seconds);
+        const m = Math.floor(s / 60);
+        const sec = s % 60;
+        return `${m}:${String(sec).padStart(2, '0')}`;
+    }
+
+    function updateReciteDisplay() {
+        const el = $('#recite-timer-display');
+        if (el) el.textContent = formatTimer(state.timerData.reciteRemaining);
+        const homeEl = $('#recite-remaining-home');
+        if (homeEl) {
+            if (state.timerData.reciteRemaining <= 0) {
+                homeEl.textContent = 'Complete!';
+                homeEl.classList.add('goal-complete');
+            } else {
+                homeEl.textContent = formatTimer(state.timerData.reciteRemaining) + ' left';
+                homeEl.classList.remove('goal-complete');
+            }
+        }
+    }
+
+    function updateListenDisplay() {
+        const el = $('#listen-timer-display');
+        if (el) el.textContent = formatTimer(state.timerData.listenRemaining);
+        const homeEl = $('#listen-remaining-home');
+        if (homeEl) {
+            if (state.timerData.listenRemaining <= 0) {
+                homeEl.textContent = 'Complete!';
+                homeEl.classList.add('goal-complete');
+            } else {
+                homeEl.textContent = formatTimer(state.timerData.listenRemaining) + ' left';
+                homeEl.classList.remove('goal-complete');
+            }
+        }
+    }
+
+    function startReciteTimer() {
+        if (reciteInterval || state.timerData.reciteRemaining <= 0) return;
+        reciteInterval = setInterval(() => {
+            state.timerData.reciteRemaining--;
+            updateReciteDisplay();
+            if (state.timerData.reciteRemaining <= 0) {
+                stopReciteTimer();
+                showToast('Recitation goal complete!');
+            }
+            if (state.timerData.reciteRemaining % 10 === 0) saveTimers();
+        }, 1000);
+        $('#recite-play-icon').classList.add('hidden');
+        $('#recite-pause-icon').classList.remove('hidden');
+    }
+
+    function stopReciteTimer() {
+        if (reciteInterval) {
+            clearInterval(reciteInterval);
+            reciteInterval = null;
+        }
+        saveTimers();
+        const playIcon = $('#recite-play-icon');
+        const pauseIcon = $('#recite-pause-icon');
+        if (playIcon) playIcon.classList.remove('hidden');
+        if (pauseIcon) pauseIcon.classList.add('hidden');
+    }
+
+    function startListenTimer() {
+        if (listenInterval || state.timerData.listenRemaining <= 0) return;
+        listenInterval = setInterval(() => {
+            state.timerData.listenRemaining--;
+            updateListenDisplay();
+            if (state.timerData.listenRemaining <= 0) {
+                stopListenTimer();
+                showToast('Listening goal complete!');
+            }
+            if (state.timerData.listenRemaining % 10 === 0) saveTimers();
+        }, 1000);
+    }
+
+    function stopListenTimer() {
+        if (listenInterval) {
+            clearInterval(listenInterval);
+            listenInterval = null;
+        }
+        saveTimers();
+    }
+
+    function showTimerBar() {
+        const bar = $('#reader-timer-bar');
+        const recite = $('#recite-timer');
+        const listen = $('#listen-timer');
+        if (!bar) return;
+
+        const hasRecite = state.timerData.reciteRemaining > 0;
+        const hasListen = state.timerData.listenRemaining > 0;
+
+        recite.classList.toggle('hidden', !hasRecite);
+        listen.classList.toggle('hidden', !hasListen);
+        bar.classList.toggle('hidden', !hasRecite && !hasListen);
+
+        updateReciteDisplay();
+        updateListenDisplay();
+    }
+
+    function updateGoalDisplays() {
+        const rd = $('#recite-target-display');
+        const ld = $('#listen-target-display');
+        if (rd) rd.textContent = state.goals.reciteMinutes;
+        if (ld) ld.textContent = state.goals.listenMinutes;
+        updateReciteDisplay();
+        updateListenDisplay();
+    }
+
+    function adjustGoal(type, delta) {
+        const key = type === 'recite' ? 'reciteMinutes' : 'listenMinutes';
+        state.goals[key] = Math.max(5, Math.min(120, state.goals[key] + delta));
+        saveGoals();
+
+        // Also update today's remaining if increasing
+        const remKey = type === 'recite' ? 'reciteRemaining' : 'listenRemaining';
+        state.timerData[remKey] = state.goals[key] * 60;
+        saveTimers();
+
+        updateGoalDisplays();
+    }
+
+    // ==========================================
     // Event Listeners
     // ==========================================
 
@@ -887,7 +1133,24 @@
                 localStorage.removeItem('qc_settings');
                 localStorage.removeItem('qc_last_read');
                 localStorage.removeItem('qc_fontsize');
+                localStorage.removeItem('qc_goals');
+                localStorage.removeItem('qc_timers');
                 location.reload();
+            }
+        });
+
+        // Goal adjusters
+        $('#btn-recite-up').addEventListener('click', () => adjustGoal('recite', 5));
+        $('#btn-recite-down').addEventListener('click', () => adjustGoal('recite', -5));
+        $('#btn-listen-up').addEventListener('click', () => adjustGoal('listen', 5));
+        $('#btn-listen-down').addEventListener('click', () => adjustGoal('listen', -5));
+
+        // Recite timer toggle
+        $('#btn-recite-toggle').addEventListener('click', () => {
+            if (reciteInterval) {
+                stopReciteTimer();
+            } else {
+                startReciteTimer();
             }
         });
 
@@ -932,6 +1195,7 @@
         dom.selectTranslation.value = state.settings.translation;
         dom.fontSizeDisplay.textContent = state.fontSize;
 
+        initTimers();
         setupEvents();
 
         try {
@@ -940,6 +1204,8 @@
             renderHeroStats();
             renderContinueReading();
             renderStreak();
+            renderRamadanCountdown();
+            updateGoalDisplays();
         } catch (err) {
             dom.surahList.innerHTML = `
                 <div style="text-align:center;padding:2rem;color:var(--danger);">

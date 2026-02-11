@@ -110,6 +110,46 @@
                     </div>
                 </div>
 
+                <!-- Ramadan Countdown -->
+                <div id="ramadan-countdown" class="section ramadan-countdown"></div>
+
+                <!-- Daily Goals -->
+                <div class="section daily-goals">
+                    <h2 class="section-title">Daily Goals</h2>
+                    <div class="goals-cards">
+                        <div class="goal-card">
+                            <div class="goal-icon goal-icon-recite">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+                            </div>
+                            <div class="goal-info">
+                                <div class="goal-label">Recitation</div>
+                                <div class="goal-adjuster">
+                                    <button class="goal-btn" id="btn-recite-down">-</button>
+                                    <span class="goal-value" id="recite-target-display">30</span>
+                                    <span class="goal-unit">min</span>
+                                    <button class="goal-btn" id="btn-recite-up">+</button>
+                                </div>
+                            </div>
+                            <div class="goal-remaining" id="recite-remaining-home"></div>
+                        </div>
+                        <div class="goal-card">
+                            <div class="goal-icon goal-icon-listen">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg>
+                            </div>
+                            <div class="goal-info">
+                                <div class="goal-label">Listening</div>
+                                <div class="goal-adjuster">
+                                    <button class="goal-btn" id="btn-listen-down">-</button>
+                                    <span class="goal-value" id="listen-target-display">15</span>
+                                    <span class="goal-unit">min</span>
+                                    <button class="goal-btn" id="btn-listen-up">+</button>
+                                </div>
+                            </div>
+                            <div class="goal-remaining" id="listen-remaining-home"></div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Continue Reading -->
                 <div id="continue-reading" class="section continue-reading hidden">
                     <h2 class="section-title">Continue Reading</h2>
@@ -190,6 +230,24 @@
                             <span id="font-size-display">28</span>
                             <button id="btn-font-increase" class="small-btn">A+</button>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Reader Timer Bar -->
+                <div id="reader-timer-bar" class="reader-timer-bar hidden">
+                    <div id="recite-timer" class="timer-item hidden">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+                        <span class="timer-label">Recite</span>
+                        <span id="recite-timer-display" class="timer-time">30:00</span>
+                        <button id="btn-recite-toggle" class="timer-ctrl" title="Start/Pause">
+                            <svg id="recite-play-icon" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21"/></svg>
+                            <svg id="recite-pause-icon" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" class="hidden"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                        </button>
+                    </div>
+                    <div id="listen-timer" class="timer-item hidden">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0118 0v6"/></svg>
+                        <span class="timer-label">Listen</span>
+                        <span id="listen-timer-display" class="timer-time">15:00</span>
                     </div>
                 </div>
 

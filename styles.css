@@ -1650,6 +1650,19 @@ body {
 
     .audio-extra { display: none; }
 
+    .goals-cards {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.4rem;
+    }
+
+    .goal-card {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .goal-value {
+        font-size: 1.1rem;
+    }
+
     .header-title { font-size: 1rem; }
 
     .settings-list {
@@ -1719,8 +1732,242 @@ select:focus:not(:focus-visible) {
     outline: none;
 }
 
+/* ============================================
+   Ramadan Countdown
+   ============================================ */
+
+.ramadan-countdown {
+    margin-top: 0;
+}
+
+.countdown-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--bg-secondary);
+    box-shadow: var(--shadow-sm);
+}
+
+.countdown-before {
+    border-color: rgba(var(--gold-rgb), 0.3);
+    background: var(--gold-light);
+}
+
+.countdown-during {
+    border-color: rgba(var(--accent-rgb), 0.3);
+    background: var(--accent-light);
+}
+
+.countdown-moon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-tertiary);
+    border-radius: 50%;
+    color: var(--gold);
+    flex-shrink: 0;
+}
+
+.countdown-moon.active {
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    color: white;
+    box-shadow: 0 2px 8px rgba(var(--accent-rgb), 0.3);
+}
+
+.countdown-label {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.countdown-value {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+}
+
+/* ============================================
+   Daily Goals
+   ============================================ */
+
+.daily-goals {
+    margin-top: 0;
+}
+
+.goals-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.goal-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 0.75rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+}
+
+.goal-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.goal-icon-recite {
+    background: var(--accent-light);
+    color: var(--accent);
+}
+
+.goal-icon-listen {
+    background: var(--gold-light);
+    color: var(--gold);
+}
+
+.goal-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.goal-adjuster {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.goal-btn {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid var(--border);
+    border-radius: 50%;
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-ui);
+    line-height: 1;
+}
+
+.goal-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-light);
+}
+
+.goal-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    min-width: 1.5rem;
+}
+
+.goal-unit {
+    font-size: 0.78rem;
+    color: var(--text-tertiary);
+    font-weight: 500;
+}
+
+.goal-remaining {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    min-height: 1.1em;
+}
+
+.goal-remaining.goal-complete {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+/* ============================================
+   Reader Timer Bar
+   ============================================ */
+
+.reader-timer-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 0.5rem 1rem;
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.timer-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.75rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+}
+
+.timer-item svg {
+    flex-shrink: 0;
+}
+
+.timer-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-tertiary);
+}
+
+.timer-time {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-primary);
+    min-width: 3rem;
+}
+
+.timer-ctrl {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.timer-ctrl:hover {
+    background: var(--accent);
+    color: white;
+}
+
 /* Print */
 @media print {
-    .header, .audio-player, .search-bar, .reader-controls, .verse-actions, .surah-nav { display: none; }
+    .header, .audio-player, .search-bar, .reader-controls, .verse-actions, .surah-nav, .reader-timer-bar { display: none; }
     .verse { break-inside: avoid; }
 }
