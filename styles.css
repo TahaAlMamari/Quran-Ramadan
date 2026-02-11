@@ -1977,6 +1977,166 @@ select:focus:not(:focus-visible) {
 }
 
 /* ==========================================
+   Tajweed Color Rules
+   ========================================== */
+
+/* Tajweed toggle button in controls */
+.tajweed-toggle {
+    flex: 0 0 auto;
+}
+
+.tajweed-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.7rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    font-family: var(--font-ui);
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.tajweed-btn.active {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: var(--accent);
+}
+
+.tajweed-btn .tajweed-dot {
+    display: flex;
+    gap: 2px;
+}
+
+.tajweed-dot span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.tajweed-dot span:nth-child(1) { background: #DD0008; }
+.tajweed-dot span:nth-child(2) { background: #169777; }
+.tajweed-dot span:nth-child(3) { background: #537FFF; }
+
+/* Tajweed color classes — applied to <tajweed> elements from API */
+tajweed {
+    font-style: normal;
+}
+
+tajweed.ham_wasl {
+    color: #AAAAAA;
+}
+
+tajweed.laam_shamsiyah {
+    color: #AAAAAA;
+}
+
+tajweed.madda_normal {
+    color: #537FFF;
+}
+
+tajweed.madda_permissible {
+    color: #4050FF;
+}
+
+tajweed.madda_obligatory {
+    color: #2144C1;
+}
+
+tajweed.madda_necessary {
+    color: #000EBC;
+}
+
+tajweed.ghunnah {
+    color: #FF7E1E;
+}
+
+tajweed.ikhafa {
+    color: #D500B7;
+}
+
+tajweed.ikhafa_shafawi {
+    color: #D500B7;
+}
+
+tajweed.idghaam_ghunnah {
+    color: #169777;
+}
+
+tajweed.idghaam_no_ghunnah {
+    color: #169777;
+}
+
+tajweed.idghaam_mutajanisayn {
+    color: #A1A1A1;
+}
+
+tajweed.idghaam_mutaqaribayn {
+    color: #A1A1A1;
+}
+
+tajweed.iqlab {
+    color: #26BFFD;
+}
+
+tajweed.qalqalah {
+    color: #DD0008;
+}
+
+tajweed.silent {
+    color: #AAAAAA;
+}
+
+/* Dark mode adjustments — brighten tajweed colors for contrast */
+[data-theme="dark"] tajweed.madda_normal { color: #7BA3FF; }
+[data-theme="dark"] tajweed.madda_permissible { color: #7B8BFF; }
+[data-theme="dark"] tajweed.madda_obligatory { color: #5B7AE6; }
+[data-theme="dark"] tajweed.madda_necessary { color: #4466E6; }
+[data-theme="dark"] tajweed.ghunnah { color: #FFA04E; }
+[data-theme="dark"] tajweed.ikhafa,
+[data-theme="dark"] tajweed.ikhafa_shafawi { color: #E94ED4; }
+[data-theme="dark"] tajweed.idghaam_ghunnah,
+[data-theme="dark"] tajweed.idghaam_no_ghunnah { color: #2BD4A0; }
+[data-theme="dark"] tajweed.iqlab { color: #4ED4FF; }
+[data-theme="dark"] tajweed.qalqalah { color: #FF4D54; }
+[data-theme="dark"] tajweed.ham_wasl,
+[data-theme="dark"] tajweed.laam_shamsiyah,
+[data-theme="dark"] tajweed.silent,
+[data-theme="dark"] tajweed.idghaam_mutajanisayn,
+[data-theme="dark"] tajweed.idghaam_mutaqaribayn { color: #888; }
+
+/* Tajweed legend */
+.tajweed-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    padding: 0.6rem 1rem;
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border);
+    font-size: 0.68rem;
+    color: var(--text-secondary);
+}
+
+.tajweed-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    white-space: nowrap;
+}
+
+.tajweed-legend-item .swatch {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* ==========================================
    PWA — Native App Polish
    ========================================== */
 

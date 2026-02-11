@@ -89,6 +89,7 @@
         showTranslation: true,
         autoScroll: true,
         arabicNumbers: true,
+        tajweed: false,
         reciter: 'ar.alafasy',
         translation: 'en.sahih',
         ...state.settings,
@@ -155,7 +156,8 @@
     }
 
     async function loadSurah(number, reciter, translation) {
-        const editions = `quran-uthmani,${translation},${reciter}`;
+        const arabicEdition = state.settings.tajweed ? 'quran-tajweed' : 'quran-uthmani';
+        const editions = `${arabicEdition},${translation},${reciter}`;
         const data = await fetchAPI(`/surah/${number}/editions/${editions}`);
         return {
             arabic: data[0],
@@ -256,10 +258,70 @@
             .replace(/\u0671/g, '\u0627'); // alef wasla → regular alef
     }
 
+    // Strip HTML tags (for tajweed text processing)
+    function stripHTML(str) {
+        return str.replace(/<[^>]+>/g, '');
+    }
+
+    // Strip Bismillah from text that may contain HTML (tajweed)
+    function stripBismillahFromText(text, hasTags) {
+        const plain = hasTags ? stripHTML(text) : text;
+        const base = stripDiacritics(plain);
+        const idx = base.indexOf('الرحيم');
+        if (idx === -1) return text;
+
+        // Find end of الرحيم in stripped-diacritics plain text
+        const endInBase = idx + 'الرحيم'.length;
+
+        // Map base position → plain text position
+        let basePos = 0;
+        let plainPos = 0;
+        while (basePos < endInBase && plainPos < plain.length) {
+            if (stripDiacritics(plain[plainPos]) === '') {
+                plainPos++;
+            } else {
+                basePos++;
+                plainPos++;
+            }
+        }
+        // Skip trailing diacritics
+        while (plainPos < plain.length && stripDiacritics(plain[plainPos]) === '') plainPos++;
+
+        if (!hasTags) return text.substring(plainPos).trim();
+
+        // Map plain text position → original HTML position (skip over tags)
+        let pCount = 0;
+        let htmlPos = 0;
+        let inTag = false;
+        while (pCount < plainPos && htmlPos < text.length) {
+            if (text[htmlPos] === '<') {
+                inTag = true;
+                htmlPos++;
+            } else if (inTag) {
+                if (text[htmlPos] === '>') inTag = false;
+                htmlPos++;
+            } else {
+                pCount++;
+                htmlPos++;
+            }
+        }
+        // Skip any trailing closing tags
+        while (htmlPos < text.length && text[htmlPos] === '<') {
+            const end = text.indexOf('>', htmlPos);
+            if (end !== -1 && text[htmlPos + 1] === '/') {
+                htmlPos = end + 1;
+            } else {
+                break;
+            }
+        }
+        return text.substring(htmlPos).trim();
+    }
+
     function renderVerses() {
         const { arabic, translation, audio } = state.currentVerses;
         const showTranslation = state.settings.showTranslation;
         const useArabicNums = state.settings.arabicNumbers;
+        const isTajweed = state.settings.tajweed;
         const surahNum = state.currentSurah ? state.currentSurah.number : 0;
         const showDecorativeBismillah = surahNum !== 1 && surahNum !== 9;
 
@@ -271,28 +333,19 @@
             // Strip Bismillah from first verse if decorative Bismillah is shown
             let verseText = ayah.text;
             if (i === 0 && showDecorativeBismillah) {
-                const base = stripDiacritics(verseText);
-                const idx = base.indexOf('الرحيم');
-                if (idx !== -1) {
-                    // Find the matching position in the original text (with diacritics)
-                    let basePos = 0;
-                    let origPos = 0;
-                    while (basePos < idx + 'الرحيم'.length && origPos < verseText.length) {
-                        if (stripDiacritics(verseText[origPos]) === '') {
-                            origPos++;
-                        } else {
-                            basePos++;
-                            origPos++;
-                        }
-                    }
-                    verseText = verseText.substring(origPos).trim();
-                }
+                verseText = stripBismillahFromText(verseText, isTajweed);
             }
+
+            // For tajweed text (contains HTML), we use innerHTML directly.
+            // For plain text, we escape to be safe.
+            const arabicContent = isTajweed
+                ? `${verseText} <span class="verse-number">﴿${verseNum}﴾</span>`
+                : `${verseText} <span class="verse-number">﴿${verseNum}﴾</span>`;
 
             return `
                 <div class="verse" data-index="${i}" data-verse-number="${ayah.number}" data-verse-in-surah="${ayah.numberInSurah}">
                     <div class="verse-arabic" style="font-size: ${state.fontSize}px">
-                        ${verseText} <span class="verse-number">﴿${verseNum}﴾</span>
+                        ${arabicContent}
                     </div>
                     ${showTranslation ? `<div class="verse-translation">${ayah.numberInSurah}. ${translationText}</div>` : ''}
                     <div class="verse-actions">
@@ -655,7 +708,7 @@
                 surahNumber: state.currentSurah.number,
                 surahName: state.currentSurah.englishName,
                 verseInSurah: arabic.numberInSurah,
-                arabic: arabic.text,
+                arabic: state.settings.tajweed ? stripHTML(arabic.text) : arabic.text,
                 translation: trans.text,
             });
             showToast('Verse bookmarked');
@@ -675,7 +728,8 @@
     function copyVerse(index) {
         const arabic = state.currentVerses.arabic.ayahs[index];
         const trans = state.currentVerses.translation.ayahs[index];
-        const text = `${arabic.text}\n\n${trans.text}\n\n— ${state.currentSurah.englishName} ${arabic.numberInSurah}`;
+        const arabicText = state.settings.tajweed ? stripHTML(arabic.text) : arabic.text;
+        const text = `${arabicText}\n\n${trans.text}\n\n— ${state.currentSurah.englishName} ${arabic.numberInSurah}`;
 
         navigator.clipboard.writeText(text).then(() => {
             showToast('Verse copied');
@@ -1081,6 +1135,19 @@
         $('#btn-font-decrease').addEventListener('click', () => updateFontSize(-2));
         $('#btn-font-increase').addEventListener('click', () => updateFontSize(2));
 
+        // Tajweed toggle
+        $('#btn-tajweed').addEventListener('click', () => {
+            state.settings.tajweed = !state.settings.tajweed;
+            saveSettings();
+            $('#btn-tajweed').classList.toggle('active', state.settings.tajweed);
+            $('#tajweed-legend').classList.toggle('hidden', !state.settings.tajweed);
+            // Reload current surah with tajweed edition
+            if (state.currentSurah) {
+                stopAudio();
+                openSurah(state.currentSurah.number);
+            }
+        });
+
         // Audio controls
         $('#btn-audio-play').addEventListener('click', togglePlayPause);
         $('#btn-audio-next').addEventListener('click', playNext);
@@ -1194,6 +1261,10 @@
         dom.selectReciter.value = state.settings.reciter;
         dom.selectTranslation.value = state.settings.translation;
         dom.fontSizeDisplay.textContent = state.fontSize;
+
+        // Tajweed state
+        $('#btn-tajweed').classList.toggle('active', state.settings.tajweed);
+        $('#tajweed-legend').classList.toggle('hidden', !state.settings.tajweed);
 
         initTimers();
         setupEvents();
