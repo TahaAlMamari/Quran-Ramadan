@@ -437,6 +437,7 @@
         filter: 'all',
         bookmarks: JSON.parse(localStorage.getItem('qc_bookmarks') || '[]'),
         readingProgress: JSON.parse(localStorage.getItem('qc_progress') || '{}'),
+        versePositions: JSON.parse(localStorage.getItem('qc_verse_positions') || '{}'),
         ramadanPlan: JSON.parse(localStorage.getItem('qc_ramadan') || '{"completedDays":[]}'),
         streak: JSON.parse(localStorage.getItem('qc_streak') || '{"count":0,"lastDate":null}'),
         settings: JSON.parse(localStorage.getItem('qc_settings') || '{}'),
@@ -819,6 +820,68 @@
         return text.substring(htmlPos).trim();
     }
 
+    // ==========================================
+    // Verse Position Tracking
+    // ==========================================
+
+    let currentVisibleVerse = 1;
+    let verseObserver = null;
+    let savePositionTimer = null;
+
+    function setupVerseTracking() {
+        if (verseObserver) verseObserver.disconnect();
+
+        const verses = dom.versesContainer.querySelectorAll('.verse');
+        if (verses.length === 0) return;
+
+        verseObserver = new IntersectionObserver((entries) => {
+            let topVerse = null;
+            let topY = Infinity;
+            for (const entry of entries) {
+                if (entry.isIntersecting) {
+                    const rect = entry.boundingClientRect;
+                    if (rect.top < topY) {
+                        topY = rect.top;
+                        topVerse = entry.target;
+                    }
+                }
+            }
+            if (topVerse) {
+                const num = parseInt(topVerse.dataset.verseInSurah);
+                if (num && num !== currentVisibleVerse) {
+                    currentVisibleVerse = num;
+                    debouncedSavePosition();
+                }
+            }
+        }, {
+            root: null,
+            rootMargin: '-10% 0px -70% 0px',
+            threshold: 0
+        });
+
+        verses.forEach(v => verseObserver.observe(v));
+    }
+
+    function debouncedSavePosition() {
+        if (savePositionTimer) clearTimeout(savePositionTimer);
+        savePositionTimer = setTimeout(saveReadingPosition, 1000);
+    }
+
+    function saveReadingPosition() {
+        if (!state.currentSurah) return;
+        const number = state.currentSurah.number;
+
+        state.versePositions[number] = currentVisibleVerse;
+        localStorage.setItem('qc_verse_positions', JSON.stringify(state.versePositions));
+
+        localStorage.setItem('qc_last_read', JSON.stringify({
+            surahNumber: number,
+            surahName: state.currentSurah.englishName,
+            surahNameAr: state.currentSurah.name,
+            verse: currentVisibleVerse,
+        }));
+    }
+
     function renderVerses() {
         const { arabic, translation, audio } = state.currentVerses;
         const showTranslation = state.settings.showTranslation;
@@ -1076,21 +1139,28 @@
             // Show Ramadan banner in reader
             renderReaderRamadanBanner(number);
 
+            // Determine which verse to resume from
+            const targetVerse = scrollToVerse || state.versePositions[number] || null;
+
             // Save last read
+            currentVisibleVerse = targetVerse || 1;
             localStorage.setItem('qc_last_read', JSON.stringify({
                 surahNumber: number,
                 surahName: surah.englishName,
                 surahNameAr: surah.name,
-                verse: scrollToVerse || 1,
+                verse: currentVisibleVerse,
             }));
+
+            // Setup verse position tracking
+            setupVerseTracking();
 
             // Update streak
             recordReading();
 
-            // Scroll to specific verse
-            if (scrollToVerse) {
+            // Scroll to saved/target verse
+            if (targetVerse && targetVerse > 1) {
                 setTimeout(() => {
-                    const verseEl = dom.versesContainer.querySelector(`[data-verse-in-surah="${scrollToVerse}"]`);
+                    const verseEl = dom.versesContainer.querySelector(`[data-verse-in-surah="${targetVerse}"]`);
                     if (verseEl) {
                         verseEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         verseEl.classList.add('playing');
@@ -1691,7 +1761,10 @@
 
     function setupEvents() {
         // Navigation
-        $('#btn-home').addEventListener('click', () => showView('home'));
+        $('#btn-home').addEventListener('click', () => {
+            saveReadingPosition();
+            showView('home');
+        });
         $('#btn-bookmarks').addEventListener('click', () => showView('bookmarks'));
         $('#btn-ramadan').addEventListener('click', () => showView('ramadan'));
         $('#btn-settings').addEventListener('click', () => showView('settings'));
@@ -1732,11 +1805,13 @@
 
         // Reader
         $('#btn-back').addEventListener('click', () => {
+            saveReadingPosition();
             showView('home');
         });
 
         $('#btn-prev-surah').addEventListener('click', () => {
             if (state.currentSurah && state.currentSurah.number > 1) {
+                saveReadingPosition();
                 stopAudio();
                 openSurah(state.currentSurah.number - 1);
             }
@@ -1744,6 +1819,7 @@
 
         $('#btn-next-surah').addEventListener('click', () => {
             if (state.currentSurah && state.currentSurah.number < 114) {
+                saveReadingPosition();
                 stopAudio();
                 openSurah(state.currentSurah.number + 1);
             }
@@ -1845,6 +1921,7 @@
                 localStorage.removeItem('qc_streak');
                 localStorage.removeItem('qc_settings');
                 localStorage.removeItem('qc_last_read');
+                localStorage.removeItem('qc_verse_positions');
                 localStorage.removeItem('qc_fontsize');
                 localStorage.removeItem('qc_goals');
                 localStorage.removeItem('qc_timers');
@@ -2005,6 +2082,12 @@
     }
 
     window.addEventListener('hashchange', handleHashRoute);
+
+    // Save reading position when leaving/minimizing the app
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') saveReadingPosition();
+    });
+    window.addEventListener('beforeunload', saveReadingPosition);
 
     // Start the app
     if (document.readyState === 'loading') {
