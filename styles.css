@@ -1912,8 +1912,13 @@ select:focus:not(:focus-visible) {
     justify-content: center;
     gap: 1rem;
     padding: 0.5rem 1rem;
-    background: var(--bg-tertiary);
+    background: var(--glass-bg);
     border-bottom: 1px solid var(--border-light);
+    position: sticky;
+    top: calc(var(--header-height) + 52px);
+    z-index: 45;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 .timer-item {
