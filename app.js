@@ -108,10 +108,13 @@
         searchInput: $('#search-input'),
         surahList: $('#surah-list'),
         heroStats: $('#hero-stats'),
+        heroGreeting: $('#hero-greeting'),
+        heroRamadanBadge: $('#hero-ramadan-badge'),
+        heroDailyVerse: $('#hero-daily-verse'),
+        heroContinue: $('#hero-continue'),
+        heroProgressCircle: $('#progress-circle'),
+        heroProgressPct: $('#progress-pct'),
         continueReading: $('#continue-reading'),
-        continueCard: $('#continue-card'),
-        streakCount: $('#streak-count'),
-        streakFlame: $('#streak-flame'),
         versesContainer: $('#verses-container'),
         readerBismillah: $('#reader-bismillah'),
         readerSurahName: $('#reader-surah-name'),
@@ -202,53 +205,131 @@
         });
     }
 
+    function renderHero() {
+        renderHeroGreeting();
+        renderHeroRamadanBadge();
+        renderHeroDailyVerse();
+        renderHeroContinue();
+        renderHeroProgress();
+        renderHeroStats();
+    }
+
+    function renderHeroGreeting() {
+        const hour = new Date().getHours();
+        let greeting;
+        if (hour < 5) greeting = 'Assalamu Alaikum';
+        else if (hour < 12) greeting = 'Good Morning';
+        else if (hour < 17) greeting = 'Good Afternoon';
+        else if (hour < 21) greeting = 'Good Evening';
+        else greeting = 'Assalamu Alaikum';
+        dom.heroGreeting.textContent = greeting;
+    }
+
+    function renderHeroRamadanBadge() {
+        const info = getRamadanInfo();
+        if (info.status === 'during') {
+            dom.heroRamadanBadge.classList.add('visible');
+            dom.heroRamadanBadge.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                Day ${info.dayOf} · ${info.daysLeft}d left
+            `;
+        } else if (info.status === 'before' && info.daysUntil <= 30) {
+            dom.heroRamadanBadge.classList.add('visible');
+            dom.heroRamadanBadge.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                ${info.daysUntil}d to Ramadan
+            `;
+        }
+    }
+
+    function renderHeroDailyVerse() {
+        // Pick a verse based on today's date for consistency
+        const DAILY_VERSES = [
+            { text: 'فَإِنَّ مَعَ ٱلْعُسْرِ يُسْرًا', ref: 'Ash-Sharh 94:5', translation: 'For indeed, with hardship comes ease.' },
+            { text: 'وَمَن يَتَوَكَّلْ عَلَى ٱللَّهِ فَهُوَ حَسْبُهُۥ', ref: 'At-Talaq 65:3', translation: 'Whoever relies upon Allah, He is sufficient for him.' },
+            { text: 'وَٱذْكُرُوٓا۟ ٱللَّهَ كَثِيرًا لَّعَلَّكُمْ تُفْلِحُونَ', ref: 'Al-Jumu\'ah 62:10', translation: 'Remember Allah often so that you may succeed.' },
+            { text: 'رَبِّ ٱشْرَحْ لِى صَدْرِى', ref: 'Ta-Ha 20:25', translation: 'My Lord, expand for me my chest.' },
+            { text: 'إِنَّ ٱللَّهَ مَعَ ٱلصَّـٰبِرِينَ', ref: 'Al-Baqarah 2:153', translation: 'Indeed, Allah is with the patient.' },
+            { text: 'وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰٓ', ref: 'Ad-Duha 93:5', translation: 'And your Lord is going to give you, and you will be satisfied.' },
+            { text: 'رَبَّنَآ ءَاتِنَا فِى ٱلدُّنْيَا حَسَنَةً وَفِى ٱلْـَٔاخِرَةِ حَسَنَةً', ref: 'Al-Baqarah 2:201', translation: 'Our Lord, give us good in this world and good in the Hereafter.' },
+            { text: 'وَنُنَزِّلُ مِنَ ٱلْقُرْءَانِ مَا هُوَ شِفَآءٌ وَرَحْمَةٌ لِّلْمُؤْمِنِينَ', ref: 'Al-Isra 17:82', translation: 'We send down the Quran as a healing and mercy for the believers.' },
+            { text: 'فَٱذْكُرُونِىٓ أَذْكُرْكُمْ', ref: 'Al-Baqarah 2:152', translation: 'Remember Me, and I will remember you.' },
+            { text: 'وَهُوَ مَعَكُمْ أَيْنَ مَا كُنتُمْ', ref: 'Al-Hadid 57:4', translation: 'He is with you wherever you are.' },
+            { text: 'قُلْ هُوَ ٱللَّهُ أَحَدٌ', ref: 'Al-Ikhlas 112:1', translation: 'Say: He is Allah, the One.' },
+            { text: 'أَلَا بِذِكْرِ ٱللَّهِ تَطْمَئِنُّ ٱلْقُلُوبُ', ref: 'Ar-Ra\'d 13:28', translation: 'Verily, in the remembrance of Allah do hearts find rest.' },
+            { text: 'وَقُل رَّبِّ زِدْنِى عِلْمًا', ref: 'Ta-Ha 20:114', translation: 'And say: My Lord, increase me in knowledge.' },
+            { text: 'إِنَّ رَحْمَتَ ٱللَّهِ قَرِيبٌ مِّنَ ٱلْمُحْسِنِينَ', ref: 'Al-A\'raf 7:56', translation: 'Indeed, the mercy of Allah is near to the doers of good.' },
+        ];
+        const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+        const verse = DAILY_VERSES[dayOfYear % DAILY_VERSES.length];
+        dom.heroDailyVerse.innerHTML = `
+            <div class="hero-verse-text">${verse.text}</div>
+            <div class="hero-verse-ref">${verse.translation} — ${verse.ref}</div>
+        `;
+    }
+
+    function renderHeroContinue() {
+        const last = localStorage.getItem('qc_last_read');
+        if (!last) {
+            dom.heroContinue.innerHTML = '';
+            return;
+        }
+        const { surahNumber, surahName, surahNameAr, verse } = JSON.parse(last);
+        dom.heroContinue.innerHTML = `
+            <button class="hero-continue-btn" id="hero-continue-btn">
+                <div class="hero-continue-icon">${surahNameAr ? surahNameAr.charAt(0) : '📖'}</div>
+                <div class="hero-continue-text">
+                    <div class="hero-continue-title">Continue: ${surahName}</div>
+                    <div class="hero-continue-sub">Verse ${verse}</div>
+                </div>
+                <div class="hero-continue-arrow">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+            </button>
+        `;
+        $('#hero-continue-btn').onclick = () => openSurah(surahNumber, verse);
+    }
+
+    function renderHeroProgress() {
+        const totalRead = Object.keys(state.readingProgress).length;
+        const pct = Math.round((totalRead / 114) * 100);
+        const circumference = 2 * Math.PI * 34; // r=34
+        const offset = circumference - (pct / 100) * circumference;
+        dom.heroProgressCircle.style.strokeDashoffset = offset;
+        dom.heroProgressPct.textContent = pct + '%';
+    }
+
     function renderHeroStats() {
         const totalRead = Object.keys(state.readingProgress).length;
+        updateStreak();
         dom.heroStats.innerHTML = `
             <div class="hero-stat">
+                <div class="hero-stat-icon">📖</div>
                 <div class="hero-stat-value">${totalRead}</div>
-                <div class="hero-stat-label">Surahs Read</div>
+                <div class="hero-stat-label">Surahs</div>
             </div>
             <div class="hero-stat">
+                <div class="hero-stat-icon">🔖</div>
                 <div class="hero-stat-value">${state.bookmarks.length}</div>
-                <div class="hero-stat-label">Bookmarks</div>
+                <div class="hero-stat-label">Saved</div>
             </div>
             <div class="hero-stat">
+                <div class="hero-stat-icon">🔥</div>
                 <div class="hero-stat-value">${state.streak.count}</div>
-                <div class="hero-stat-label">Day Streak</div>
+                <div class="hero-stat-label">Streak</div>
             </div>
         `;
     }
 
     function renderContinueReading() {
-        const last = localStorage.getItem('qc_last_read');
-        if (!last) {
-            dom.continueReading.classList.add('hidden');
-            return;
-        }
-        const { surahNumber, surahName, surahNameAr, verse } = JSON.parse(last);
-        dom.continueReading.classList.remove('hidden');
-        dom.continueCard.innerHTML = `
-            <div class="card-icon">${surahNameAr ? surahNameAr.charAt(0) : '📖'}</div>
-            <div class="card-text">
-                <div class="card-title">${surahName}</div>
-                <div class="card-subtitle">Verse ${verse} · Tap to continue</div>
-            </div>
-            <div class="card-arrow">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-            </div>
-        `;
-        dom.continueCard.onclick = () => openSurah(surahNumber, verse);
+        // Continue reading is now rendered inside the hero box
+        renderHeroContinue();
     }
 
     function renderStreak() {
         updateStreak();
-        dom.streakCount.textContent = state.streak.count;
-        if (state.streak.count > 0) {
-            dom.streakFlame.classList.add('active');
-        } else {
-            dom.streakFlame.classList.remove('active');
-        }
+        // Streak is now displayed as a stat in the hero box
+        renderHeroStats();
     }
 
     // Strip diacritics and normalize Arabic text for comparison
@@ -531,9 +612,7 @@
 
         // Render view-specific content
         if (viewName === 'home') {
-            renderHeroStats();
-            renderContinueReading();
-            renderStreak();
+            renderHero();
             renderRamadanCountdown();
             updateGoalDisplays();
         } else if (viewName === 'reader') {
@@ -1313,9 +1392,7 @@
         try {
             await loadSurahList();
             renderSurahList();
-            renderHeroStats();
-            renderContinueReading();
-            renderStreak();
+            renderHero();
             renderRamadanCountdown();
             updateGoalDisplays();
         } catch (err) {

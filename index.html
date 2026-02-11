@@ -99,23 +99,46 @@
                     <div class="hero-pattern"></div>
                     <div class="hero-glow"></div>
                     <div class="hero-content">
-                        <div class="hero-ornament">
-                            <svg viewBox="0 0 120 40" class="hero-divider-top">
-                                <path d="M0,20 Q30,0 60,20 Q90,40 120,20" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
-                            </svg>
+                        <!-- Greeting + Ramadan badge row -->
+                        <div class="hero-top-row">
+                            <p class="hero-greeting" id="hero-greeting">Assalamu Alaikum</p>
+                            <div class="hero-ramadan-badge" id="hero-ramadan-badge"></div>
                         </div>
+
+                        <!-- Bismillah -->
                         <p class="hero-bismillah">بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ</p>
-                        <p class="hero-translation">In the name of Allah, the Most Gracious, the Most Merciful</p>
+
+                        <!-- Daily Verse -->
+                        <div class="hero-daily-verse" id="hero-daily-verse"></div>
+
+                        <!-- Continue Reading (inside hero) -->
+                        <div class="hero-continue" id="hero-continue"></div>
+
+                        <!-- Divider -->
                         <div class="hero-divider">
                             <span class="hero-divider-line"></span>
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="rgba(255,255,255,0.5)"><polygon points="12,2 15,10 23,10 17,15 19,23 12,18 5,23 7,15 1,10 9,10"/></svg>
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="rgba(255,255,255,0.4)"><polygon points="12,2 15,10 23,10 17,15 19,23 12,18 5,23 7,15 1,10 9,10"/></svg>
                             <span class="hero-divider-line"></span>
                         </div>
-                        <div class="hero-stats" id="hero-stats"></div>
+
+                        <!-- Progress + Stats -->
+                        <div class="hero-progress-row">
+                            <div class="hero-progress-ring" id="hero-progress-ring">
+                                <svg viewBox="0 0 80 80" class="progress-svg">
+                                    <circle class="progress-track" cx="40" cy="40" r="34"/>
+                                    <circle class="progress-fill" cx="40" cy="40" r="34" id="progress-circle"/>
+                                </svg>
+                                <div class="progress-center">
+                                    <span class="progress-pct" id="progress-pct">0%</span>
+                                    <span class="progress-label">Complete</span>
+                                </div>
+                            </div>
+                            <div class="hero-stats" id="hero-stats"></div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Ramadan Countdown -->
+                <!-- Ramadan Countdown (separate card, shown during/before Ramadan) -->
                 <div id="ramadan-countdown" class="section ramadan-countdown"></div>
 
                 <!-- Daily Goals -->
@@ -155,24 +178,8 @@
                     </div>
                 </div>
 
-                <!-- Continue Reading -->
-                <div id="continue-reading" class="section continue-reading hidden">
-                    <h2 class="section-title">Continue Reading</h2>
-                    <div id="continue-card" class="continue-card"></div>
-                </div>
-
-                <!-- Streak Widget -->
-                <div id="streak-widget" class="section streak-widget">
-                    <div class="streak-info">
-                        <div class="streak-flame" id="streak-flame">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M12 23c-3.6 0-8-2.4-8-7.7 0-3.5 2.1-6.4 4-8.8.4-.6 1.2-.2 1.1.5-.3 2 .5 3.3 1.5 4.3.2.2.5 0 .4-.3C10.3 8 12 5 15.3 3c.5-.3 1.1.2.9.8-.5 1.8-.2 3.7.8 5.2 1.5 2.2 2 3.5 2 5.3 0 5.3-3.4 8.7-7 8.7z"/></svg>
-                        </div>
-                        <div>
-                            <p class="streak-count"><span id="streak-count">0</span> Day Streak</p>
-                            <p class="streak-label">Keep reading daily!</p>
-                        </div>
-                    </div>
-                </div>
+                <!-- Continue Reading (legacy, hidden — now in hero) -->
+                <div id="continue-reading" class="hidden"></div>
 
                 <!-- Surah List -->
                 <div class="section">
