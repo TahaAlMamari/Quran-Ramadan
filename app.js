@@ -311,6 +311,23 @@
             share: 'Share',
             note: 'Note',
             keyboardShortcuts: 'Shortcuts: Space=Play, B=Bookmark, N=Note, ←→=Navigate',
+            // Leaderboard / Community
+            leaderboard: 'Community',
+            leaderboardDesc: 'See how you compare — all anonymous, all for Allah',
+            leaderboardLoading: 'Connecting...',
+            leaderboardOfflineHint: 'Leaderboard requires an internet connection',
+            myRank: 'Your Rank',
+            outOf: 'out of',
+            readers: 'readers',
+            top10Today: "Today's Top Readers",
+            versesToday: 'verses today',
+            minutesToday: 'min listened',
+            totalVerses: 'Total Verses',
+            totalListening: 'Listening',
+            noActivity: 'No activity yet today — start reading!',
+            leaderboardUpdated: 'Leaderboard updated',
+            you: 'You',
+            rank: 'Rank',
         },
         ar: {
             // Header & Nav
@@ -496,6 +513,23 @@
             share: 'مشاركة',
             note: 'ملاحظة',
             keyboardShortcuts: 'اختصارات: مسافة=تشغيل، B=حفظ، N=ملاحظة، ←→=تنقل',
+            // Leaderboard / Community
+            leaderboard: 'المجتمع',
+            leaderboardDesc: 'قارن تقدمك — الكل مجهول، الكل لله',
+            leaderboardLoading: 'جاري الاتصال...',
+            leaderboardOfflineHint: 'لوحة المتصدرين تتطلب اتصالاً بالإنترنت',
+            myRank: 'ترتيبك',
+            outOf: 'من',
+            readers: 'قارئ',
+            top10Today: 'أفضل القراء اليوم',
+            versesToday: 'آية اليوم',
+            minutesToday: 'دقيقة استماع',
+            totalVerses: 'إجمالي الآيات',
+            totalListening: 'الاستماع',
+            noActivity: 'لا نشاط حتى الآن — ابدأ القراءة!',
+            leaderboardUpdated: 'تم تحديث لوحة المتصدرين',
+            you: 'أنت',
+            rank: 'الترتيب',
         },
     };
 
@@ -611,6 +645,219 @@
     // Timer intervals
     let reciteInterval = null;
     let listenInterval = null;
+
+    // ==========================================
+    // Firebase — Anonymous Leaderboard
+    // ==========================================
+    const FIREBASE_CONFIG = {
+        apiKey: "AIzaSyPlaceholder-ReplaceWithYourKey",
+        authDomain: "quran-companion-ramadan.firebaseapp.com",
+        projectId: "quran-companion-ramadan",
+        storageBucket: "quran-companion-ramadan.appspot.com",
+        messagingSenderId: "000000000000",
+        appId: "1:000000000000:web:placeholder"
+    };
+
+    let fb = { app: null, auth: null, db: null, uid: null, ready: false };
+
+    function initFirebase() {
+        if (typeof firebase === 'undefined') return;
+        try {
+            fb.app = firebase.initializeApp(FIREBASE_CONFIG);
+            fb.auth = firebase.auth();
+            fb.db = firebase.firestore();
+            // Enable offline persistence
+            fb.db.enablePersistence({ synchronizeTabs: true }).catch(() => {});
+            // Anonymous sign-in
+            fb.auth.signInAnonymously().then(cred => {
+                fb.uid = cred.user.uid;
+                fb.ready = true;
+                // Sync local stats to Firestore on sign-in
+                syncStatsToFirestore();
+            }).catch(() => {
+                fb.ready = false;
+            });
+        } catch (e) {
+            fb.ready = false;
+        }
+    }
+
+    function syncStatsToFirestore() {
+        if (!fb.ready || !fb.db || !fb.uid) return;
+        const today = getToday();
+        const todayData = state.readingHistory[today] || { versesRead: 0, minutesRead: 0 };
+        const totalVersesRead = Object.values(state.readingHistory).reduce((sum, d) => sum + (d.versesRead || 0), 0);
+        const totalMinutesListened = Object.values(state.readingHistory).reduce((sum, d) => sum + (d.minutesRead || 0), 0);
+
+        fb.db.collection('daily_stats').doc(fb.uid).set({
+            date: today,
+            versesToday: todayData.versesRead || 0,
+            minutesToday: todayData.minutesRead || 0,
+            totalVerses: totalVersesRead,
+            totalMinutes: totalMinutesListened,
+            streak: state.streak.count || 0,
+            surahsRead: Object.keys(state.readingProgress).length,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        }, { merge: true }).catch(() => {});
+    }
+
+    async function fetchLeaderboard() {
+        if (!fb.ready || !fb.db) return { entries: [], myRank: null, total: 0 };
+        const today = getToday();
+
+        try {
+            const snapshot = await fb.db.collection('daily_stats')
+                .where('date', '==', today)
+                .orderBy('versesToday', 'desc')
+                .limit(100)
+                .get();
+
+            const entries = [];
+            let myRank = null;
+            let myIndex = -1;
+
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                entries.push({
+                    id: doc.id,
+                    versesToday: data.versesToday || 0,
+                    minutesToday: data.minutesToday || 0,
+                    totalVerses: data.totalVerses || 0,
+                    streak: data.streak || 0,
+                    isMe: doc.id === fb.uid,
+                });
+            });
+
+            // Find my rank
+            for (let i = 0; i < entries.length; i++) {
+                if (entries[i].isMe) {
+                    myIndex = i;
+                    myRank = i + 1;
+                    break;
+                }
+            }
+
+            return {
+                entries: entries.slice(0, 10),
+                myRank,
+                myEntry: myIndex >= 0 ? entries[myIndex] : null,
+                total: entries.length,
+            };
+        } catch (e) {
+            return { entries: [], myRank: null, total: 0 };
+        }
+    }
+
+    function renderLeaderboard(data) {
+        const listEl = $('#leaderboard-list');
+        const myRankEl = $('#leaderboard-my-rank');
+        const emptyEl = $('#leaderboard-empty');
+
+        if (!listEl) return;
+
+        if (!data || (!data.entries.length && !data.myEntry)) {
+            listEl.innerHTML = '';
+            myRankEl.innerHTML = '';
+            emptyEl.classList.remove('hidden');
+            return;
+        }
+
+        emptyEl.classList.add('hidden');
+
+        // My rank card
+        if (data.myEntry) {
+            myRankEl.innerHTML = `
+                <div class="lb-my-card">
+                    <div class="lb-my-rank-circle">
+                        <span class="lb-my-rank-num">${data.myRank ? '#' + data.myRank : '—'}</span>
+                    </div>
+                    <div class="lb-my-info">
+                        <div class="lb-my-title">${t('myRank')}</div>
+                        <div class="lb-my-subtitle">${data.myRank ? data.myRank + ' ' + t('outOf') + ' ' + data.total + ' ' + t('readers') : t('noActivity')}</div>
+                    </div>
+                    <div class="lb-my-stats">
+                        <div class="lb-my-stat">
+                            <span class="lb-my-stat-value">${data.myEntry.versesToday}</span>
+                            <span class="lb-my-stat-label">${t('versesToday')}</span>
+                        </div>
+                        <div class="lb-my-stat">
+                            <span class="lb-my-stat-value">${data.myEntry.minutesToday}</span>
+                            <span class="lb-my-stat-label">${t('minutesToday')}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            myRankEl.innerHTML = `
+                <div class="lb-my-card lb-no-activity">
+                    <div class="lb-my-rank-circle">
+                        <span class="lb-my-rank-num">—</span>
+                    </div>
+                    <div class="lb-my-info">
+                        <div class="lb-my-title">${t('myRank')}</div>
+                        <div class="lb-my-subtitle">${t('noActivity')}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Top 10 list
+        let html = `<h3 class="lb-section-title">${t('top10Today')}</h3>`;
+        html += '<div class="lb-entries">';
+
+        data.entries.forEach((entry, i) => {
+            const rank = i + 1;
+            const isMe = entry.isMe;
+            const medalClass = rank === 1 ? 'lb-gold' : rank === 2 ? 'lb-silver' : rank === 3 ? 'lb-bronze' : '';
+
+            html += `
+                <div class="lb-entry ${isMe ? 'lb-entry-me' : ''} ${medalClass}">
+                    <div class="lb-rank">
+                        ${rank <= 3 ? `<span class="lb-medal">${rank === 1 ? '🥇' : rank === 2 ? '🥈' : '🥉'}</span>` : `<span class="lb-rank-num">${rank}</span>`}
+                    </div>
+                    <div class="lb-bar-area">
+                        <div class="lb-bar-track">
+                            <div class="lb-bar-fill" style="width: ${data.entries[0].versesToday > 0 ? Math.max(4, (entry.versesToday / data.entries[0].versesToday) * 100) : 4}%"></div>
+                        </div>
+                        <div class="lb-entry-stats">
+                            <span class="lb-verses">${entry.versesToday} ${t('versesToday')}</span>
+                            ${isMe ? `<span class="lb-you-badge">${t('you')}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        html += '</div>';
+        listEl.innerHTML = html;
+    }
+
+    async function loadAndRenderLeaderboard() {
+        const listEl = $('#leaderboard-list');
+        const emptyEl = $('#leaderboard-empty');
+        const myRankEl = $('#leaderboard-my-rank');
+
+        if (!fb.ready) {
+            if (listEl) listEl.innerHTML = '';
+            if (myRankEl) myRankEl.innerHTML = '';
+            if (emptyEl) emptyEl.classList.remove('hidden');
+            return;
+        }
+
+        // Show loading state
+        if (listEl) {
+            listEl.innerHTML = `
+                <div class="lb-loading">
+                    <div class="skeleton skeleton-line" style="width:100%;height:48px;margin-bottom:8px"></div>
+                    <div class="skeleton skeleton-line" style="width:95%;height:48px;margin-bottom:8px"></div>
+                    <div class="skeleton skeleton-line" style="width:88%;height:48px;margin-bottom:8px"></div>
+                </div>
+            `;
+        }
+
+        const data = await fetchLeaderboard();
+        renderLeaderboard(data);
+    }
 
     // ==========================================
     // API Layer
@@ -1261,6 +1508,7 @@
         $$('.header-right .icon-btn').forEach(btn => btn.removeAttribute('data-active'));
         if (viewName === 'bookmarks') $('#btn-bookmarks').setAttribute('data-active', 'true');
         else if (viewName === 'ramadan') $('#btn-ramadan').setAttribute('data-active', 'true');
+        else if (viewName === 'leaderboard') $('#btn-leaderboard').setAttribute('data-active', 'true');
         else if (viewName === 'settings') $('#btn-settings').setAttribute('data-active', 'true');
 
         // Update bottom nav
@@ -1288,6 +1536,8 @@
             renderBookmarks();
         } else if (viewName === 'ramadan') {
             renderRamadanPlan();
+        } else if (viewName === 'leaderboard') {
+            loadAndRenderLeaderboard();
         }
     }
 
@@ -2122,6 +2372,14 @@
                 showToast(t('listenGoalComplete'));
             }
             if (state.timerData.listenRemaining % 10 === 0) saveTimers();
+            // Track listening minutes for leaderboard
+            if (state.timerData.listenRemaining % 60 === 0) {
+                const today = getToday();
+                if (!state.readingHistory[today]) state.readingHistory[today] = { versesRead: 0, minutesRead: 0 };
+                state.readingHistory[today].minutesRead = (state.readingHistory[today].minutesRead || 0) + 1;
+                localStorage.setItem('qc_reading_history', JSON.stringify(state.readingHistory));
+                syncStatsToFirestore();
+            }
         }, 1000);
     }
 
@@ -2184,6 +2442,7 @@
         });
         $('#btn-bookmarks').addEventListener('click', () => showView('bookmarks'));
         $('#btn-ramadan').addEventListener('click', () => showView('ramadan'));
+        $('#btn-leaderboard').addEventListener('click', () => showView('leaderboard'));
         $('#btn-settings').addEventListener('click', () => showView('settings'));
 
         // Search
@@ -2353,6 +2612,10 @@
             localStorage.removeItem('qc_sunnah');
             localStorage.removeItem('qc_notes');
             localStorage.removeItem('qc_reading_history');
+            // Clear Firebase leaderboard data
+            if (fb.ready && fb.db && fb.uid) {
+                fb.db.collection('daily_stats').doc(fb.uid).delete().catch(() => {});
+            }
             location.reload();
         });
 
@@ -2531,6 +2794,8 @@
             state.readingHistory[today].versesRead += state.currentVerses.arabic.ayahs.length;
         }
         localStorage.setItem('qc_reading_history', JSON.stringify(state.readingHistory));
+        // Sync to Firestore for leaderboard
+        syncStatsToFirestore();
     }
 
     function renderReadingStats() {
@@ -2818,6 +3083,9 @@
         initTimers();
         setupEvents();
 
+        // Initialize Firebase for anonymous leaderboard
+        initFirebase();
+
         // Setup new features
         setupBottomNav();
         setupOfflineDetection();
@@ -2927,6 +3195,7 @@
         const hash = location.hash.replace('#', '');
         if (hash === 'bookmarks') showView('bookmarks');
         else if (hash === 'ramadan') showView('ramadan');
+        else if (hash === 'leaderboard') showView('leaderboard');
     }
 
     window.addEventListener('hashchange', handleHashRoute);
