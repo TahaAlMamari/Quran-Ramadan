@@ -570,6 +570,7 @@
         currentSurah: null,
         currentVerses: { arabic: [], translation: [], audio: [] },
         currentView: 'home',
+        previousView: 'home',
         filter: 'all',
         bookmarks: JSON.parse(localStorage.getItem('qc_bookmarks') || '[]'),
         readingProgress: JSON.parse(localStorage.getItem('qc_progress') || '{}'),
@@ -1499,6 +1500,7 @@
         viewEl.classList.remove('hidden');
         viewEl.classList.add('view-enter');
         setTimeout(() => viewEl.classList.remove('view-enter'), 350);
+        state.previousView = state.currentView;
         state.currentView = viewName;
 
         // Scroll to top
@@ -2482,7 +2484,7 @@
         // Reader
         $('#btn-back').addEventListener('click', () => {
             saveReadingPosition();
-            showView('home');
+            showView(state.previousView || 'home');
         });
 
         $('#btn-prev-surah').addEventListener('click', () => {
