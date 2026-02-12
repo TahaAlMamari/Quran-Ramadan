@@ -3206,6 +3206,723 @@ body {
 
 /* Print */
 @media print {
-    .header, .audio-player, .search-bar, .reader-controls, .verse-actions, .surah-nav, .reader-timer-bar, .install-banner, .reader-ramadan-banner, .sunnah-tasks-section { display: none; }
+    .header, .audio-player, .search-bar, .reader-controls, .verse-actions, .surah-nav, .reader-timer-bar, .install-banner, .reader-ramadan-banner, .sunnah-tasks-section, .bottom-nav { display: none; }
     .verse { break-inside: avoid; }
 }
+
+/* ============================================
+   UI/UX Improvements — Phase 2
+   ============================================ */
+
+/* === Skip Link (Accessibility) === */
+.skip-link {
+    position: absolute;
+    top: -100%;
+    left: 0;
+    z-index: 9999;
+    padding: 0.75rem 1.5rem;
+    background: var(--accent);
+    color: white;
+    font-weight: 600;
+    font-size: 0.88rem;
+    text-decoration: none;
+    border-radius: 0 0 var(--radius-md) 0;
+    transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* === Offline Banner === */
+.offline-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--danger);
+    color: white;
+    font-size: 0.78rem;
+    font-weight: 500;
+    text-align: center;
+    animation: slide-down 0.3s ease;
+}
+
+.offline-banner.hidden {
+    display: none !important;
+}
+
+.offline-banner ~ .app .header {
+    top: 32px;
+}
+
+/* === Bottom Navigation Bar === */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 150;
+    display: none;
+    align-items: stretch;
+    background: var(--glass-bg);
+    border-top: 1px solid var(--border);
+    backdrop-filter: blur(20px) saturate(1.5);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+@media (max-width: 600px) {
+    .bottom-nav {
+        display: flex;
+    }
+
+    /* Hide header nav buttons on mobile (use bottom nav instead) */
+    .header-right #btn-bookmarks,
+    .header-right #btn-ramadan,
+    .header-right #btn-settings {
+        display: none;
+    }
+
+    /* Adjust padding for bottom nav */
+    .main-content {
+        padding-bottom: 140px;
+    }
+
+    /* Move toast above bottom nav */
+    .toast {
+        bottom: 120px;
+    }
+
+    /* Move audio player above bottom nav */
+    .audio-player {
+        bottom: 56px;
+    }
+}
+
+.bottom-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    padding: 0.5rem 0.25rem;
+    border: none;
+    background: transparent;
+    color: var(--text-tertiary);
+    font-family: var(--font-ui);
+    font-size: 0.62rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    min-height: 56px;
+    position: relative;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.bottom-nav-item svg {
+    transition: all 0.25s ease;
+}
+
+.bottom-nav-item.active {
+    color: var(--accent);
+}
+
+.bottom-nav-item.active svg {
+    transform: scale(1.1);
+}
+
+.bottom-nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 0 0 2px 2px;
+}
+
+/* === Active View Indicator (Header) === */
+.icon-btn[data-active="true"] {
+    color: var(--accent);
+    background: var(--accent-light);
+}
+
+/* === Loading Skeletons === */
+.skeleton {
+    background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--bg-hover) 50%, var(--bg-tertiary) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+    border-radius: var(--radius-md);
+}
+
+@keyframes skeleton-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.skeleton-surah-card {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.8rem 1rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+}
+
+.skeleton-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.skeleton-lines {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.skeleton-line {
+    height: 12px;
+    border-radius: 6px;
+}
+
+.skeleton-line.short { width: 60%; }
+.skeleton-line.medium { width: 80%; }
+.skeleton-line.long { width: 100%; }
+
+.skeleton-verse {
+    padding: 1.25rem 1rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.skeleton-verse .skeleton-line {
+    height: 16px;
+    margin-bottom: 0.5rem;
+}
+
+.skeleton-verse .skeleton-line:last-child {
+    height: 10px;
+    margin-bottom: 0;
+}
+
+/* === Reset Confirmation Modal === */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    animation: milestone-fade-in 0.3s ease;
+    padding: 1rem;
+}
+
+.modal-card {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-lg);
+    max-width: 360px;
+    width: 100%;
+    animation: milestone-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-icon {
+    margin-bottom: 1rem;
+}
+
+.modal-card h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.modal-card p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+}
+
+.modal-btn {
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: var(--font-ui);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 100px;
+}
+
+.modal-btn-cancel {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+}
+
+.modal-btn-cancel:hover {
+    background: var(--bg-hover);
+}
+
+.modal-btn-danger {
+    background: var(--danger);
+    color: white;
+    box-shadow: 0 2px 8px rgba(197, 48, 48, 0.3);
+}
+
+.modal-btn-danger:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(197, 48, 48, 0.4);
+}
+
+.modal-btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    color: white;
+    box-shadow: 0 2px 8px rgba(var(--accent-rgb), 0.3);
+}
+
+.modal-btn-primary:hover {
+    transform: translateY(-1px);
+}
+
+/* === Notes Modal === */
+.notes-modal-card {
+    text-align: left;
+    max-width: 420px;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.modal-header h3 {
+    margin-bottom: 0;
+}
+
+.notes-verse-ref {
+    font-size: 0.82rem;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.notes-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 0.88rem;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s ease;
+    margin-bottom: 1rem;
+    min-height: 120px;
+}
+
+.notes-textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.1);
+}
+
+/* === Verse Actions Discoverability === */
+.verse-actions-hint {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.6rem 1.2rem;
+    background: var(--text-primary);
+    color: var(--bg-primary);
+    border-radius: var(--radius-xl);
+    font-size: 0.78rem;
+    font-weight: 500;
+    z-index: 250;
+    animation: toast-in 0.35s ease, toast-out 0.35s ease 4s forwards;
+    box-shadow: var(--shadow-lg);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+/* === Smooth View Transitions === */
+.view-enter {
+    animation: view-slide-in 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes view-slide-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.surah-transition {
+    animation: surah-slide 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes surah-slide {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.surah-transition-prev {
+    animation: surah-slide-prev 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes surah-slide-prev {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* === Bookmark Controls === */
+.bookmark-controls {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0 1rem;
+    margin-bottom: 0.75rem;
+    align-items: center;
+}
+
+.bookmark-search-wrapper {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.bookmark-search-wrapper svg {
+    position: absolute;
+    left: 0.7rem;
+    color: var(--text-tertiary);
+    pointer-events: none;
+}
+
+.bookmark-search-wrapper input {
+    width: 100%;
+    height: 38px;
+    padding: 0 0.75rem 0 2.25rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 0.82rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.bookmark-search-wrapper input:focus {
+    border-color: var(--accent);
+}
+
+.bookmark-sort-wrapper select {
+    height: 38px;
+    padding: 0 0.6rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 0.78rem;
+    cursor: pointer;
+    outline: none;
+}
+
+/* === Reading Statistics Section === */
+.reading-stats-section {
+    margin-bottom: 1.5rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+}
+
+.stat-card {
+    padding: 0.85rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+}
+
+.stat-card-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.15rem;
+}
+
+.stat-card-label {
+    font-size: 0.7rem;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+}
+
+.stat-card-icon {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+}
+
+.stats-chart {
+    margin-top: 0.75rem;
+    padding: 0.85rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.stats-chart-title {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.stats-week-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.25rem;
+    height: 60px;
+}
+
+.stats-day-bar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.stats-day-fill {
+    width: 100%;
+    min-height: 2px;
+    background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+    border-radius: 3px 3px 0 0;
+    transition: height 0.5s ease;
+}
+
+.stats-day-label {
+    font-size: 0.6rem;
+    color: var(--text-tertiary);
+    font-weight: 500;
+}
+
+/* === Verse Sharing === */
+.verse-action-btn.btn-share-verse,
+.verse-action-btn.btn-note-verse {
+    display: inline-flex;
+}
+
+/* === Swipe Hint === */
+.swipe-hint {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 50;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.swipe-hint.visible {
+    opacity: 1;
+}
+
+.swipe-hint-left {
+    left: 8px;
+}
+
+.swipe-hint-right {
+    right: 8px;
+}
+
+/* === Ramadan Share Progress === */
+.ramadan-share-section {
+    padding: 1rem;
+    text-align: center;
+}
+
+.share-progress-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.5rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: var(--font-ui);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 3px 12px rgba(var(--accent-rgb), 0.3);
+}
+
+.share-progress-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(var(--accent-rgb), 0.4);
+}
+
+.share-progress-btn:active {
+    transform: translateY(0);
+}
+
+/* === Tajweed Legend Auto-Show Indicator === */
+.tajweed-legend-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.75rem;
+    padding: 0.5rem 1rem;
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border);
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    animation: fade-in 0.3s ease;
+}
+
+/* === Verse Reference Format === */
+.verse-ref-tag {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    background: var(--bg-tertiary);
+    padding: 0.12rem 0.45rem;
+    border-radius: var(--radius-sm);
+    margin-top: 0.25rem;
+    font-family: var(--font-ui);
+    direction: ltr;
+}
+
+/* === Notes Indicator on Verse === */
+.verse-note-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.72rem;
+    color: var(--gold-dark);
+    background: var(--gold-light);
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+    margin-top: 0.3rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.verse-note-indicator:hover {
+    background: rgba(var(--gold-rgb), 0.15);
+}
+
+/* === Keyboard Shortcut Hint === */
+.keyboard-hint {
+    position: fixed;
+    bottom: 80px;
+    right: 1rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 100;
+    animation: fade-in 0.3s ease;
+    display: none;
+}
+
+.keyboard-hint kbd {
+    display: inline-block;
+    padding: 0.1rem 0.35rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: var(--font-ui);
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0.15rem;
+}
+
+@media (min-width: 601px) {
+    .keyboard-hint {
+        display: block;
+    }
+}
+
+/* === Touch Target Improvements === */
+@media (max-width: 600px) {
+    .icon-btn {
+        width: 44px;
+        height: 44px;
+    }
+
+    .goal-btn {
+        width: 32px;
+        height: 32px;
+    }
+
+    .audio-btn {
+        width: 44px;
+        height: 44px;
+    }
+
+    .audio-btn.play-btn {
+        width: 52px;
+        height: 52px;
+    }
+
+    .verse-action-btn {
+        min-height: 36px;
+        padding: 0.4rem 0.75rem;
+    }
+}
+
+/* === RTL for new elements === */
+[dir="rtl"] .bottom-nav { flex-direction: row-reverse; }
+[dir="rtl"] .bookmark-controls { flex-direction: row-reverse; }
+[dir="rtl"] .bookmark-search-wrapper svg { left: auto; right: 0.7rem; }
+[dir="rtl"] .bookmark-search-wrapper input { padding: 0 2.25rem 0 0.75rem; }
+[dir="rtl"] .modal-header { flex-direction: row-reverse; }
+[dir="rtl"] .notes-modal-card { text-align: right; }
+[dir="rtl"] .offline-banner { flex-direction: row-reverse; }
