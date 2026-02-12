@@ -284,6 +284,50 @@
             sunnahTask_sajdahDesc: 'Recited by the Prophet before sleeping',
             sunnahTask_ayatulKursi: 'Ayatul Kursi (Al-Baqarah 255)',
             sunnahTask_ayatulKursiDesc: 'Greatest verse — protection until morning',
+            // New UI/UX strings
+            offlineMessage: 'You are offline. Some features may be unavailable.',
+            searchBookmarks: 'Search bookmarks...',
+            sortNewest: 'Newest First',
+            sortOldest: 'Oldest First',
+            sortSurah: 'By Surah',
+            shareProgress: 'Share Progress',
+            shareProgressText: 'I completed {n}/30 Juz ({p}%) of the Quran this Ramadan!',
+            verseNotes: 'Verse Notes',
+            notesPlaceholder: 'Write your personal reflections...',
+            saveNote: 'Save Note',
+            deleteNote: 'Delete',
+            cancel: 'Cancel',
+            confirmResetLong: 'This will permanently delete all your reading progress, bookmarks, notes, and settings. This action cannot be undone.',
+            notesSaved: 'Note saved',
+            notesDeleted: 'Note deleted',
+            verseShared: 'Verse shared',
+            readingStats: 'Reading Stats',
+            versesRead: 'Verses Read',
+            timeSpent: 'Min Read',
+            dayStreak: 'Day Streak',
+            thisWeek: 'This Week',
+            hoverVerseHint: 'Hover any verse for actions',
+            tapVerseHint: 'Tap any verse for actions',
+            share: 'Share',
+            note: 'Note',
+            keyboardShortcuts: 'Shortcuts: Space=Play, B=Bookmark, N=Note, ←→=Navigate',
+            // Leaderboard / Community
+            leaderboard: 'Community',
+            leaderboardDesc: 'See how you compare — all anonymous, all for Allah',
+            leaderboardLoading: 'Connecting...',
+            leaderboardOfflineHint: 'Leaderboard requires an internet connection',
+            myRank: 'Your Rank',
+            outOf: 'out of',
+            readers: 'readers',
+            top10Today: "Today's Top Readers",
+            versesToday: 'verses today',
+            minutesToday: 'min listened',
+            totalVerses: 'Total Verses',
+            totalListening: 'Listening',
+            noActivity: 'No activity yet today — start reading!',
+            leaderboardUpdated: 'Leaderboard updated',
+            you: 'You',
+            rank: 'Rank',
         },
         ar: {
             // Header & Nav
@@ -442,6 +486,50 @@
             sunnahTask_sajdahDesc: 'كان النبي ﷺ يقرأها قبل النوم',
             sunnahTask_ayatulKursi: 'آية الكرسي (البقرة ٢٥٥)',
             sunnahTask_ayatulKursiDesc: 'أعظم آية — حماية حتى الصباح',
+            // New UI/UX strings
+            offlineMessage: 'أنت غير متصل بالإنترنت. بعض الميزات قد لا تكون متاحة.',
+            searchBookmarks: 'ابحث في المحفوظات...',
+            sortNewest: 'الأحدث أولاً',
+            sortOldest: 'الأقدم أولاً',
+            sortSurah: 'حسب السورة',
+            shareProgress: 'شارك تقدمك',
+            shareProgressText: 'أكملت {n}/30 جزء ({p}%) من القرآن في رمضان!',
+            verseNotes: 'ملاحظات الآية',
+            notesPlaceholder: 'اكتب تأملاتك الشخصية...',
+            saveNote: 'حفظ الملاحظة',
+            deleteNote: 'حذف',
+            cancel: 'إلغاء',
+            confirmResetLong: 'سيتم حذف جميع بيانات القراءة والمحفوظات والملاحظات والإعدادات نهائياً. لا يمكن التراجع عن هذا الإجراء.',
+            notesSaved: 'تم حفظ الملاحظة',
+            notesDeleted: 'تم حذف الملاحظة',
+            verseShared: 'تمت المشاركة',
+            readingStats: 'إحصائيات القراءة',
+            versesRead: 'آيات مقروءة',
+            timeSpent: 'دقيقة قراءة',
+            dayStreak: 'أيام متتالية',
+            thisWeek: 'هذا الأسبوع',
+            hoverVerseHint: 'حرّك المؤشر على أي آية لرؤية الخيارات',
+            tapVerseHint: 'اضغط على أي آية لرؤية الخيارات',
+            share: 'مشاركة',
+            note: 'ملاحظة',
+            keyboardShortcuts: 'اختصارات: مسافة=تشغيل، B=حفظ، N=ملاحظة، ←→=تنقل',
+            // Leaderboard / Community
+            leaderboard: 'المجتمع',
+            leaderboardDesc: 'قارن تقدمك — الكل مجهول، الكل لله',
+            leaderboardLoading: 'جاري الاتصال...',
+            leaderboardOfflineHint: 'لوحة المتصدرين تتطلب اتصالاً بالإنترنت',
+            myRank: 'ترتيبك',
+            outOf: 'من',
+            readers: 'قارئ',
+            top10Today: 'أفضل القراء اليوم',
+            versesToday: 'آية اليوم',
+            minutesToday: 'دقيقة استماع',
+            totalVerses: 'إجمالي الآيات',
+            totalListening: 'الاستماع',
+            noActivity: 'لا نشاط حتى الآن — ابدأ القراءة!',
+            leaderboardUpdated: 'تم تحديث لوحة المتصدرين',
+            you: 'أنت',
+            rank: 'الترتيب',
         },
     };
 
@@ -482,6 +570,7 @@
         currentSurah: null,
         currentVerses: { arabic: [], translation: [], audio: [] },
         currentView: 'home',
+        previousView: 'home',
         filter: 'all',
         bookmarks: JSON.parse(localStorage.getItem('qc_bookmarks') || '[]'),
         readingProgress: JSON.parse(localStorage.getItem('qc_progress') || '{}'),
@@ -494,6 +583,8 @@
         fontSize: parseInt(localStorage.getItem('qc_fontsize') || '28'),
         goals: JSON.parse(localStorage.getItem('qc_goals') || '{"reciteMinutes":30,"listenMinutes":15}'),
         timerData: JSON.parse(localStorage.getItem('qc_timers') || '{"reciteRemaining":null,"listenRemaining":null,"date":null}'),
+        notes: JSON.parse(localStorage.getItem('qc_notes') || '{}'),
+        readingHistory: JSON.parse(localStorage.getItem('qc_reading_history') || '{}'),
     };
 
     // Default settings
@@ -555,6 +646,219 @@
     // Timer intervals
     let reciteInterval = null;
     let listenInterval = null;
+
+    // ==========================================
+    // Firebase — Anonymous Leaderboard
+    // ==========================================
+    const FIREBASE_CONFIG = {
+        apiKey: "AIzaSyPlaceholder-ReplaceWithYourKey",
+        authDomain: "quran-companion-ramadan.firebaseapp.com",
+        projectId: "quran-companion-ramadan",
+        storageBucket: "quran-companion-ramadan.appspot.com",
+        messagingSenderId: "000000000000",
+        appId: "1:000000000000:web:placeholder"
+    };
+
+    let fb = { app: null, auth: null, db: null, uid: null, ready: false };
+
+    function initFirebase() {
+        if (typeof firebase === 'undefined') return;
+        try {
+            fb.app = firebase.initializeApp(FIREBASE_CONFIG);
+            fb.auth = firebase.auth();
+            fb.db = firebase.firestore();
+            // Enable offline persistence
+            fb.db.enablePersistence({ synchronizeTabs: true }).catch(() => {});
+            // Anonymous sign-in
+            fb.auth.signInAnonymously().then(cred => {
+                fb.uid = cred.user.uid;
+                fb.ready = true;
+                // Sync local stats to Firestore on sign-in
+                syncStatsToFirestore();
+            }).catch(() => {
+                fb.ready = false;
+            });
+        } catch (e) {
+            fb.ready = false;
+        }
+    }
+
+    function syncStatsToFirestore() {
+        if (!fb.ready || !fb.db || !fb.uid) return;
+        const today = getToday();
+        const todayData = state.readingHistory[today] || { versesRead: 0, minutesRead: 0 };
+        const totalVersesRead = Object.values(state.readingHistory).reduce((sum, d) => sum + (d.versesRead || 0), 0);
+        const totalMinutesListened = Object.values(state.readingHistory).reduce((sum, d) => sum + (d.minutesRead || 0), 0);
+
+        fb.db.collection('daily_stats').doc(fb.uid).set({
+            date: today,
+            versesToday: todayData.versesRead || 0,
+            minutesToday: todayData.minutesRead || 0,
+            totalVerses: totalVersesRead,
+            totalMinutes: totalMinutesListened,
+            streak: state.streak.count || 0,
+            surahsRead: Object.keys(state.readingProgress).length,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        }, { merge: true }).catch(() => {});
+    }
+
+    async function fetchLeaderboard() {
+        if (!fb.ready || !fb.db) return { entries: [], myRank: null, total: 0 };
+        const today = getToday();
+
+        try {
+            const snapshot = await fb.db.collection('daily_stats')
+                .where('date', '==', today)
+                .orderBy('versesToday', 'desc')
+                .limit(100)
+                .get();
+
+            const entries = [];
+            let myRank = null;
+            let myIndex = -1;
+
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                entries.push({
+                    id: doc.id,
+                    versesToday: data.versesToday || 0,
+                    minutesToday: data.minutesToday || 0,
+                    totalVerses: data.totalVerses || 0,
+                    streak: data.streak || 0,
+                    isMe: doc.id === fb.uid,
+                });
+            });
+
+            // Find my rank
+            for (let i = 0; i < entries.length; i++) {
+                if (entries[i].isMe) {
+                    myIndex = i;
+                    myRank = i + 1;
+                    break;
+                }
+            }
+
+            return {
+                entries: entries.slice(0, 10),
+                myRank,
+                myEntry: myIndex >= 0 ? entries[myIndex] : null,
+                total: entries.length,
+            };
+        } catch (e) {
+            return { entries: [], myRank: null, total: 0 };
+        }
+    }
+
+    function renderLeaderboard(data) {
+        const listEl = $('#leaderboard-list');
+        const myRankEl = $('#leaderboard-my-rank');
+        const emptyEl = $('#leaderboard-empty');
+
+        if (!listEl) return;
+
+        if (!data || (!data.entries.length && !data.myEntry)) {
+            listEl.innerHTML = '';
+            myRankEl.innerHTML = '';
+            emptyEl.classList.remove('hidden');
+            return;
+        }
+
+        emptyEl.classList.add('hidden');
+
+        // My rank card
+        if (data.myEntry) {
+            myRankEl.innerHTML = `
+                <div class="lb-my-card">
+                    <div class="lb-my-rank-circle">
+                        <span class="lb-my-rank-num">${data.myRank ? '#' + data.myRank : '—'}</span>
+                    </div>
+                    <div class="lb-my-info">
+                        <div class="lb-my-title">${t('myRank')}</div>
+                        <div class="lb-my-subtitle">${data.myRank ? data.myRank + ' ' + t('outOf') + ' ' + data.total + ' ' + t('readers') : t('noActivity')}</div>
+                    </div>
+                    <div class="lb-my-stats">
+                        <div class="lb-my-stat">
+                            <span class="lb-my-stat-value">${data.myEntry.versesToday}</span>
+                            <span class="lb-my-stat-label">${t('versesToday')}</span>
+                        </div>
+                        <div class="lb-my-stat">
+                            <span class="lb-my-stat-value">${data.myEntry.minutesToday}</span>
+                            <span class="lb-my-stat-label">${t('minutesToday')}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            myRankEl.innerHTML = `
+                <div class="lb-my-card lb-no-activity">
+                    <div class="lb-my-rank-circle">
+                        <span class="lb-my-rank-num">—</span>
+                    </div>
+                    <div class="lb-my-info">
+                        <div class="lb-my-title">${t('myRank')}</div>
+                        <div class="lb-my-subtitle">${t('noActivity')}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Top 10 list
+        let html = `<h3 class="lb-section-title">${t('top10Today')}</h3>`;
+        html += '<div class="lb-entries">';
+
+        data.entries.forEach((entry, i) => {
+            const rank = i + 1;
+            const isMe = entry.isMe;
+            const medalClass = rank === 1 ? 'lb-gold' : rank === 2 ? 'lb-silver' : rank === 3 ? 'lb-bronze' : '';
+
+            html += `
+                <div class="lb-entry ${isMe ? 'lb-entry-me' : ''} ${medalClass}">
+                    <div class="lb-rank">
+                        ${rank <= 3 ? `<span class="lb-medal">${rank === 1 ? '🥇' : rank === 2 ? '🥈' : '🥉'}</span>` : `<span class="lb-rank-num">${rank}</span>`}
+                    </div>
+                    <div class="lb-bar-area">
+                        <div class="lb-bar-track">
+                            <div class="lb-bar-fill" style="width: ${data.entries[0].versesToday > 0 ? Math.max(4, (entry.versesToday / data.entries[0].versesToday) * 100) : 4}%"></div>
+                        </div>
+                        <div class="lb-entry-stats">
+                            <span class="lb-verses">${entry.versesToday} ${t('versesToday')}</span>
+                            ${isMe ? `<span class="lb-you-badge">${t('you')}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        html += '</div>';
+        listEl.innerHTML = html;
+    }
+
+    async function loadAndRenderLeaderboard() {
+        const listEl = $('#leaderboard-list');
+        const emptyEl = $('#leaderboard-empty');
+        const myRankEl = $('#leaderboard-my-rank');
+
+        if (!fb.ready) {
+            if (listEl) listEl.innerHTML = '';
+            if (myRankEl) myRankEl.innerHTML = '';
+            if (emptyEl) emptyEl.classList.remove('hidden');
+            return;
+        }
+
+        // Show loading state
+        if (listEl) {
+            listEl.innerHTML = `
+                <div class="lb-loading">
+                    <div class="skeleton skeleton-line" style="width:100%;height:48px;margin-bottom:8px"></div>
+                    <div class="skeleton skeleton-line" style="width:95%;height:48px;margin-bottom:8px"></div>
+                    <div class="skeleton skeleton-line" style="width:88%;height:48px;margin-bottom:8px"></div>
+                </div>
+            `;
+        }
+
+        const data = await fetchLeaderboard();
+        renderLeaderboard(data);
+    }
 
     // ==========================================
     // API Layer
@@ -959,24 +1263,37 @@
                 ? `${verseText} <span class="verse-number">﴿${verseNum}﴾</span>`
                 : `${verseText} <span class="verse-number">﴿${verseNum}﴾</span>`;
 
+            const noteKey = `${surahNum}:${ayah.numberInSurah}`;
+            const hasNote = !!state.notes[noteKey];
+
             return `
                 <div class="verse" data-index="${i}" data-verse-number="${ayah.number}" data-verse-in-surah="${ayah.numberInSurah}">
                     <div class="verse-arabic" style="font-size: ${state.fontSize}px">
                         ${arabicContent}
                     </div>
                     ${showTranslation ? `<div class="verse-translation">${ayah.numberInSurah}. ${translationText}</div>` : ''}
+                    <span class="verse-ref-tag">${surahNum}:${ayah.numberInSurah}</span>
+                    ${hasNote ? `<div class="verse-note-indicator" data-surah="${surahNum}" data-verse="${ayah.numberInSurah}"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="2"/></svg> ${t('note')}</div>` : ''}
                     <div class="verse-actions">
-                        <button class="verse-action-btn btn-play-verse" data-index="${i}" title="${t('play')}">
+                        <button class="verse-action-btn btn-play-verse" data-index="${i}" title="${t('play')}" aria-label="Play verse ${ayah.numberInSurah}">
                             <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                             ${t('play')}
                         </button>
-                        <button class="verse-action-btn btn-bookmark-verse ${isBookmarked ? 'bookmarked' : ''}" data-number="${ayah.number}" data-index="${i}" title="${t('bookmark')}">
+                        <button class="verse-action-btn btn-bookmark-verse ${isBookmarked ? 'bookmarked' : ''}" data-number="${ayah.number}" data-index="${i}" title="${t('bookmark')}" aria-label="${isBookmarked ? 'Remove bookmark' : 'Bookmark verse'}">
                             <svg viewBox="0 0 24 24" fill="${isBookmarked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
                             ${isBookmarked ? t('savedBtn') : t('save')}
                         </button>
-                        <button class="verse-action-btn btn-copy-verse" data-index="${i}" title="${t('copy')}">
+                        <button class="verse-action-btn btn-copy-verse" data-index="${i}" title="${t('copy')}" aria-label="Copy verse">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
                             ${t('copy')}
+                        </button>
+                        <button class="verse-action-btn btn-share-verse" data-index="${i}" title="${t('share')}" aria-label="Share verse">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                            ${t('share')}
+                        </button>
+                        <button class="verse-action-btn btn-note-verse" data-index="${i}" data-surah="${surahNum}" data-verse="${ayah.numberInSurah}" title="${t('note')}" aria-label="Add note">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                            ${t('note')}
                         </button>
                     </div>
                 </div>
@@ -1004,22 +1321,70 @@
                 copyVerse(parseInt(btn.dataset.index));
             });
         });
+
+        dom.versesContainer.querySelectorAll('.btn-share-verse').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                shareVerse(parseInt(btn.dataset.index));
+            });
+        });
+
+        dom.versesContainer.querySelectorAll('.btn-note-verse').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openNoteModal(parseInt(btn.dataset.surah), parseInt(btn.dataset.verse));
+            });
+        });
+
+        dom.versesContainer.querySelectorAll('.verse-note-indicator').forEach(el => {
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openNoteModal(parseInt(el.dataset.surah), parseInt(el.dataset.verse));
+            });
+        });
+
+        // Track reading activity for statistics
+        trackReadingActivity();
     }
 
-    function renderBookmarks() {
+    function renderBookmarks(searchQuery, sortBy) {
+        const controls = $('#bookmark-controls');
         if (state.bookmarks.length === 0) {
             dom.bookmarksList.classList.add('hidden');
             dom.bookmarksEmpty.classList.remove('hidden');
+            if (controls) controls.classList.add('hidden');
             return;
         }
         dom.bookmarksList.classList.remove('hidden');
         dom.bookmarksEmpty.classList.add('hidden');
+        if (controls) controls.classList.remove('hidden');
 
-        dom.bookmarksList.innerHTML = state.bookmarks.map((bm, i) => `
+        // Filter by search
+        const query = (searchQuery || '').toLowerCase();
+        let filtered = state.bookmarks.map((bm, i) => ({ ...bm, originalIndex: i }));
+        if (query) {
+            filtered = filtered.filter(bm =>
+                bm.surahName.toLowerCase().includes(query) ||
+                bm.translation.toLowerCase().includes(query) ||
+                bm.arabic.includes(query) ||
+                String(bm.surahNumber).includes(query) ||
+                String(bm.verseInSurah).includes(query)
+            );
+        }
+
+        // Sort
+        const sort = sortBy || 'newest';
+        if (sort === 'oldest') {
+            filtered = [...filtered].reverse();
+        } else if (sort === 'surah') {
+            filtered.sort((a, b) => a.surahNumber - b.surahNumber || a.verseInSurah - b.verseInSurah);
+        }
+
+        dom.bookmarksList.innerHTML = filtered.map(bm => `
             <div class="bookmark-card" data-surah="${bm.surahNumber}" data-verse="${bm.verseInSurah}">
                 <div class="bookmark-header">
-                    <span class="bookmark-surah">${bm.surahName} ${bm.verseInSurah}</span>
-                    <button class="bookmark-remove" data-index="${i}" title="Remove">
+                    <span class="bookmark-surah">${bm.surahName} ${bm.surahNumber}:${bm.verseInSurah}</span>
+                    <button class="bookmark-remove" data-index="${bm.originalIndex}" title="Remove" aria-label="Remove bookmark">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     </button>
                 </div>
@@ -1131,16 +1496,34 @@
 
     function showView(viewName) {
         $$('.view').forEach(v => v.classList.add('hidden'));
-        $(`#view-${viewName}`).classList.remove('hidden');
+        const viewEl = $(`#view-${viewName}`);
+        viewEl.classList.remove('hidden');
+        viewEl.classList.add('view-enter');
+        setTimeout(() => viewEl.classList.remove('view-enter'), 350);
+        state.previousView = state.currentView;
         state.currentView = viewName;
 
         // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
+        // Update active indicators (header)
+        $$('.header-right .icon-btn').forEach(btn => btn.removeAttribute('data-active'));
+        if (viewName === 'bookmarks') $('#btn-bookmarks').setAttribute('data-active', 'true');
+        else if (viewName === 'ramadan') $('#btn-ramadan').setAttribute('data-active', 'true');
+        else if (viewName === 'leaderboard') $('#btn-leaderboard').setAttribute('data-active', 'true');
+        else if (viewName === 'settings') $('#btn-settings').setAttribute('data-active', 'true');
+
+        // Update bottom nav
+        updateBottomNav(viewName);
+
         // Stop recite timer when leaving reader
         if (viewName !== 'reader') {
             stopReciteTimer();
         }
+
+        // Show/hide keyboard hints
+        const kbHint = $('#keyboard-hint');
+        if (kbHint) kbHint.style.display = viewName === 'reader' ? '' : 'none';
 
         // Render view-specific content
         if (viewName === 'home') {
@@ -1148,24 +1531,37 @@
             renderRamadanCountdown();
             renderSunnahTasks();
             updateGoalDisplays();
+            renderReadingStats();
         } else if (viewName === 'reader') {
             showTimerBar();
         } else if (viewName === 'bookmarks') {
             renderBookmarks();
         } else if (viewName === 'ramadan') {
             renderRamadanPlan();
+        } else if (viewName === 'leaderboard') {
+            loadAndRenderLeaderboard();
         }
+    }
+
+    function updateBottomNav(viewName) {
+        $$('.bottom-nav-item').forEach(item => {
+            const isActive = item.dataset.view === viewName ||
+                (item.dataset.view === 'home' && viewName === 'reader');
+            item.classList.toggle('active', isActive);
+        });
     }
 
     async function openSurah(number, scrollToVerse = null) {
         showView('reader');
 
-        // Show loading state
-        dom.versesContainer.innerHTML = `
-            <div style="text-align:center;padding:3rem;color:var(--text-tertiary);">
-                <p>${t('loadingSurah')}</p>
+        // Show loading skeleton
+        dom.versesContainer.innerHTML = Array.from({ length: 8 }, () => `
+            <div class="skeleton-verse">
+                <div class="skeleton skeleton-line long"></div>
+                <div class="skeleton skeleton-line medium"></div>
+                <div class="skeleton skeleton-line short"></div>
             </div>
-        `;
+        `).join('');
 
         const surah = state.surahs.find(s => s.number === number);
         state.currentSurah = surah;
@@ -1230,8 +1626,10 @@
         } catch (err) {
             dom.versesContainer.innerHTML = `
                 <div style="text-align:center;padding:3rem;color:var(--danger);">
-                    <p>${t('failedLoadSurah')}</p>
-                    <button onclick="location.reload()" style="margin-top:1rem;padding:0.5rem 1rem;border:1px solid;border-radius:8px;cursor:pointer;background:transparent;color:inherit;">${t('retry')}</button>
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.5" style="margin-bottom:1rem"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    <p style="font-weight:600;margin-bottom:0.5rem">${t('failedLoadSurah')}</p>
+                    <p style="font-size:0.78rem;color:var(--text-tertiary);margin-bottom:1rem">${navigator.onLine ? '' : t('offlineMessage')}</p>
+                    <button onclick="location.reload()" style="padding:0.6rem 1.5rem;border:1.5px solid var(--accent);border-radius:var(--radius-md);cursor:pointer;background:transparent;color:var(--accent);font-weight:600;font-family:var(--font-ui);font-size:0.88rem">${t('retry')}</button>
                 </div>
             `;
         }
@@ -1976,6 +2374,14 @@
                 showToast(t('listenGoalComplete'));
             }
             if (state.timerData.listenRemaining % 10 === 0) saveTimers();
+            // Track listening minutes for leaderboard
+            if (state.timerData.listenRemaining % 60 === 0) {
+                const today = getToday();
+                if (!state.readingHistory[today]) state.readingHistory[today] = { versesRead: 0, minutesRead: 0 };
+                state.readingHistory[today].minutesRead = (state.readingHistory[today].minutesRead || 0) + 1;
+                localStorage.setItem('qc_reading_history', JSON.stringify(state.readingHistory));
+                syncStatsToFirestore();
+            }
         }, 1000);
     }
 
@@ -2038,6 +2444,7 @@
         });
         $('#btn-bookmarks').addEventListener('click', () => showView('bookmarks'));
         $('#btn-ramadan').addEventListener('click', () => showView('ramadan'));
+        $('#btn-leaderboard').addEventListener('click', () => showView('leaderboard'));
         $('#btn-settings').addEventListener('click', () => showView('settings'));
 
         // Search
@@ -2077,7 +2484,7 @@
         // Reader
         $('#btn-back').addEventListener('click', () => {
             saveReadingPosition();
-            showView('home');
+            showView(state.previousView || 'home');
         });
 
         $('#btn-prev-surah').addEventListener('click', () => {
@@ -2184,20 +2591,40 @@
             if (state.currentSurah) renderVerses();
         });
 
+        // Reset button opens confirmation modal
         $('#btn-reset').addEventListener('click', () => {
-            if (confirm(t('confirmReset'))) {
-                localStorage.removeItem('qc_bookmarks');
-                localStorage.removeItem('qc_progress');
-                localStorage.removeItem('qc_ramadan');
-                localStorage.removeItem('qc_streak');
-                localStorage.removeItem('qc_settings');
-                localStorage.removeItem('qc_last_read');
-                localStorage.removeItem('qc_verse_positions');
-                localStorage.removeItem('qc_fontsize');
-                localStorage.removeItem('qc_goals');
-                localStorage.removeItem('qc_timers');
-                localStorage.removeItem('qc_sunnah');
-                location.reload();
+            $('#reset-modal').classList.remove('hidden');
+        });
+
+        $('#btn-reset-cancel').addEventListener('click', () => {
+            $('#reset-modal').classList.add('hidden');
+        });
+
+        $('#btn-reset-confirm').addEventListener('click', () => {
+            localStorage.removeItem('qc_bookmarks');
+            localStorage.removeItem('qc_progress');
+            localStorage.removeItem('qc_ramadan');
+            localStorage.removeItem('qc_streak');
+            localStorage.removeItem('qc_settings');
+            localStorage.removeItem('qc_last_read');
+            localStorage.removeItem('qc_verse_positions');
+            localStorage.removeItem('qc_fontsize');
+            localStorage.removeItem('qc_goals');
+            localStorage.removeItem('qc_timers');
+            localStorage.removeItem('qc_sunnah');
+            localStorage.removeItem('qc_notes');
+            localStorage.removeItem('qc_reading_history');
+            // Clear Firebase leaderboard data
+            if (fb.ready && fb.db && fb.uid) {
+                fb.db.collection('daily_stats').doc(fb.uid).delete().catch(() => {});
+            }
+            location.reload();
+        });
+
+        // Close modal when clicking overlay
+        $('#reset-modal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                e.currentTarget.classList.add('hidden');
             }
         });
 
@@ -2216,21 +2643,61 @@
             }
         });
 
-        // Keyboard shortcuts
+        // Enhanced keyboard shortcuts
         document.addEventListener('keydown', (e) => {
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') return;
 
             if (e.key === ' ' && state.currentView === 'reader') {
                 e.preventDefault();
                 togglePlayPause();
             }
             if (e.key === 'ArrowRight' && state.currentView === 'reader') {
-                playNext();
+                if (e.shiftKey) {
+                    // Shift+Right = next surah
+                    if (state.currentSurah && state.currentSurah.number < 114) {
+                        saveReadingPosition();
+                        stopAudio();
+                        openSurah(state.currentSurah.number + 1);
+                    }
+                } else {
+                    playNext();
+                }
             }
             if (e.key === 'ArrowLeft' && state.currentView === 'reader') {
-                playPrev();
+                if (e.shiftKey) {
+                    // Shift+Left = previous surah
+                    if (state.currentSurah && state.currentSurah.number > 1) {
+                        saveReadingPosition();
+                        stopAudio();
+                        openSurah(state.currentSurah.number - 1);
+                    }
+                } else {
+                    playPrev();
+                }
+            }
+            // B = bookmark current visible verse
+            if (e.key === 'b' && state.currentView === 'reader' && state.currentVerses.arabic.ayahs) {
+                const idx = currentVisibleVerse ? currentVisibleVerse - 1 : 0;
+                if (idx >= 0 && idx < state.currentVerses.arabic.ayahs.length) {
+                    toggleBookmark(idx);
+                }
+            }
+            // N = open notes for current visible verse
+            if (e.key === 'n' && state.currentView === 'reader' && state.currentSurah) {
+                openNoteModal(state.currentSurah.number, currentVisibleVerse || 1);
             }
             if (e.key === 'Escape') {
+                // Close modals first
+                const resetModal = $('#reset-modal');
+                const notesModal = $('#notes-modal');
+                if (!resetModal.classList.contains('hidden')) {
+                    resetModal.classList.add('hidden');
+                    return;
+                }
+                if (!notesModal.classList.contains('hidden')) {
+                    notesModal.classList.add('hidden');
+                    return;
+                }
                 if (!dom.searchBar.classList.contains('hidden')) {
                     dom.searchBar.classList.add('hidden');
                     dom.searchInput.value = '';
@@ -2240,6 +2707,358 @@
                 }
             }
         });
+    }
+
+    // ==========================================
+    // Verse Sharing (Web Share API)
+    // ==========================================
+
+    function shareVerse(index) {
+        const arabic = state.currentVerses.arabic.ayahs[index];
+        const trans = state.currentVerses.translation.ayahs[index];
+        const arabicText = state.settings.tajweed ? stripHTML(parseTajweedText(arabic.text)) : arabic.text;
+        const surahName = state.currentSurah.englishName;
+        const ref = `${surahName} ${state.currentSurah.number}:${arabic.numberInSurah}`;
+        const text = `${arabicText}\n\n${trans.text}\n\n— ${ref}`;
+
+        if (navigator.share) {
+            navigator.share({ title: ref, text: text }).catch(() => {});
+        } else {
+            // Fallback: copy to clipboard
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(t('verseCopied'));
+            }).catch(() => {
+                showToast(t('failedCopy'));
+            });
+        }
+    }
+
+    // ==========================================
+    // Personal Notes
+    // ==========================================
+
+    function openNoteModal(surahNum, verseNum) {
+        const modal = $('#notes-modal');
+        const textarea = $('#notes-textarea');
+        const verseRef = $('#notes-verse-ref');
+        const surah = state.surahs.find(s => s.number === surahNum);
+        const surahName = surah ? surah.englishName : `Surah ${surahNum}`;
+
+        verseRef.textContent = `${surahName} ${surahNum}:${verseNum}`;
+        const noteKey = `${surahNum}:${verseNum}`;
+        textarea.value = state.notes[noteKey] || '';
+        modal.classList.remove('hidden');
+
+        // Store context for save/delete
+        modal.dataset.noteKey = noteKey;
+
+        setTimeout(() => textarea.focus(), 100);
+    }
+
+    function saveNote() {
+        const modal = $('#notes-modal');
+        const textarea = $('#notes-textarea');
+        const noteKey = modal.dataset.noteKey;
+        const text = textarea.value.trim();
+
+        if (text) {
+            state.notes[noteKey] = text;
+            showToast(t('notesSaved'));
+        } else {
+            delete state.notes[noteKey];
+        }
+        localStorage.setItem('qc_notes', JSON.stringify(state.notes));
+        modal.classList.add('hidden');
+        if (state.currentSurah) renderVerses();
+    }
+
+    function deleteNote() {
+        const modal = $('#notes-modal');
+        const noteKey = modal.dataset.noteKey;
+        delete state.notes[noteKey];
+        localStorage.setItem('qc_notes', JSON.stringify(state.notes));
+        modal.classList.add('hidden');
+        showToast(t('notesDeleted'));
+        if (state.currentSurah) renderVerses();
+    }
+
+    // ==========================================
+    // Reading Statistics
+    // ==========================================
+
+    function trackReadingActivity() {
+        const today = getToday();
+        if (!state.readingHistory[today]) {
+            state.readingHistory[today] = { versesRead: 0, minutesRead: 0 };
+        }
+        // Count verses read in current surah
+        if (state.currentVerses.arabic && state.currentVerses.arabic.ayahs) {
+            state.readingHistory[today].versesRead += state.currentVerses.arabic.ayahs.length;
+        }
+        localStorage.setItem('qc_reading_history', JSON.stringify(state.readingHistory));
+        // Sync to Firestore for leaderboard
+        syncStatsToFirestore();
+    }
+
+    function renderReadingStats() {
+        const container = $('#reading-stats-container');
+        if (!container) return;
+
+        const today = getToday();
+        const todayData = state.readingHistory[today] || { versesRead: 0, minutesRead: 0 };
+        const totalSurahs = Object.keys(state.readingProgress).length;
+        const streakCount = state.streak.count;
+
+        // Build week chart
+        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const now = new Date();
+        const weekData = [];
+        let maxVerses = 1;
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date(now);
+            d.setDate(d.getDate() - i);
+            const key = d.toISOString().split('T')[0];
+            const data = state.readingHistory[key] || { versesRead: 0 };
+            weekData.push({ day: days[d.getDay()], verses: data.versesRead, key });
+            if (data.versesRead > maxVerses) maxVerses = data.versesRead;
+        }
+
+        container.innerHTML = `
+            <div class="sunnah-header">
+                <div class="sunnah-header-left">
+                    <h2 class="section-title">${t('readingStats')}</h2>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-card-value">${totalSurahs}</div>
+                    <div class="stat-card-label">${t('surahs')}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-value">${todayData.versesRead}</div>
+                    <div class="stat-card-label">${t('versesRead')}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-value">${streakCount}</div>
+                    <div class="stat-card-label">${t('dayStreak')}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-value">${Object.keys(state.notes).length}</div>
+                    <div class="stat-card-label">${t('note')}s</div>
+                </div>
+            </div>
+            <div class="stats-chart">
+                <div class="stats-chart-title">${t('thisWeek')}</div>
+                <div class="stats-week-chart">
+                    ${weekData.map(d => {
+                        const height = Math.max(2, (d.verses / maxVerses) * 48);
+                        return `
+                            <div class="stats-day-bar">
+                                <div class="stats-day-fill" style="height:${height}px"></div>
+                                <span class="stats-day-label">${d.day}</span>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    // ==========================================
+    // Ramadan Progress Sharing
+    // ==========================================
+
+    function shareRamadanProgress() {
+        const completed = state.ramadanPlan.completedDays.length;
+        const percent = Math.round((completed / 30) * 100);
+        const text = t('shareProgressText').replace('{n}', completed).replace('{p}', percent);
+
+        if (navigator.share) {
+            navigator.share({ title: 'Ramadan Progress', text: text }).catch(() => {});
+        } else {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(t('verseCopied'));
+            }).catch(() => {});
+        }
+    }
+
+    // ==========================================
+    // Offline Detection
+    // ==========================================
+
+    function setupOfflineDetection() {
+        const banner = $('#offline-banner');
+        function updateOnlineStatus() {
+            if (navigator.onLine) {
+                banner.classList.add('hidden');
+            } else {
+                banner.classList.remove('hidden');
+            }
+        }
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        updateOnlineStatus();
+    }
+
+    // ==========================================
+    // Bottom Navigation
+    // ==========================================
+
+    function setupBottomNav() {
+        $$('.bottom-nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const view = item.dataset.view;
+                if (view === 'home') {
+                    saveReadingPosition();
+                }
+                showView(view);
+            });
+        });
+    }
+
+    // ==========================================
+    // Swipe Gestures (Reader)
+    // ==========================================
+
+    function setupSwipeGestures() {
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let swiping = false;
+
+        document.addEventListener('touchstart', (e) => {
+            if (state.currentView !== 'reader') return;
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            swiping = true;
+        }, { passive: true });
+
+        document.addEventListener('touchend', (e) => {
+            if (!swiping || state.currentView !== 'reader') return;
+            swiping = false;
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+            const diffX = touchEndX - touchStartX;
+            const diffY = touchEndY - touchStartY;
+
+            // Only count horizontal swipes (min 80px, max 45deg vertical)
+            if (Math.abs(diffX) > 80 && Math.abs(diffY) < Math.abs(diffX) * 0.7) {
+                if (diffX > 0) {
+                    // Swipe right = previous surah
+                    if (state.currentSurah && state.currentSurah.number > 1) {
+                        saveReadingPosition();
+                        stopAudio();
+                        dom.versesContainer.classList.add('surah-transition-prev');
+                        setTimeout(() => dom.versesContainer.classList.remove('surah-transition-prev'), 300);
+                        openSurah(state.currentSurah.number - 1);
+                    }
+                } else {
+                    // Swipe left = next surah
+                    if (state.currentSurah && state.currentSurah.number < 114) {
+                        saveReadingPosition();
+                        stopAudio();
+                        dom.versesContainer.classList.add('surah-transition');
+                        setTimeout(() => dom.versesContainer.classList.remove('surah-transition'), 300);
+                        openSurah(state.currentSurah.number + 1);
+                    }
+                }
+            }
+        }, { passive: true });
+    }
+
+    // ==========================================
+    // Verse Actions Discoverability
+    // ==========================================
+
+    function showVerseActionsHint() {
+        if (localStorage.getItem('qc_verse_hint_shown')) return;
+        localStorage.setItem('qc_verse_hint_shown', 'true');
+
+        const isMobile = window.innerWidth <= 600;
+        const hint = document.createElement('div');
+        hint.className = 'verse-actions-hint';
+        hint.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> ${isMobile ? t('tapVerseHint') : t('hoverVerseHint')}`;
+        document.body.appendChild(hint);
+        setTimeout(() => hint.remove(), 5000);
+    }
+
+    // ==========================================
+    // Bookmark Controls (Search/Sort)
+    // ==========================================
+
+    function setupBookmarkControls() {
+        const searchInput = $('#bookmark-search');
+        const sortSelect = $('#bookmark-sort');
+
+        if (searchInput) {
+            searchInput.addEventListener('input', () => {
+                renderBookmarks(searchInput.value, sortSelect ? sortSelect.value : 'newest');
+            });
+        }
+        if (sortSelect) {
+            sortSelect.addEventListener('change', () => {
+                renderBookmarks(searchInput ? searchInput.value : '', sortSelect.value);
+            });
+        }
+    }
+
+    // ==========================================
+    // Notes Modal Events
+    // ==========================================
+
+    function setupNotesModal() {
+        $('#btn-notes-save').addEventListener('click', saveNote);
+        $('#btn-notes-delete').addEventListener('click', deleteNote);
+        $('#btn-notes-close').addEventListener('click', () => {
+            $('#notes-modal').classList.add('hidden');
+        });
+        $('#notes-modal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                e.currentTarget.classList.add('hidden');
+            }
+        });
+    }
+
+    // ==========================================
+    // Keyboard Shortcuts Hint
+    // ==========================================
+
+    function createKeyboardHint() {
+        if (window.innerWidth <= 600) return;
+        const existing = $('#keyboard-hint');
+        if (existing) return;
+
+        const hint = document.createElement('div');
+        hint.id = 'keyboard-hint';
+        hint.className = 'keyboard-hint';
+        hint.innerHTML = `<kbd>Space</kbd> Play &nbsp; <kbd>B</kbd> Bookmark &nbsp; <kbd>N</kbd> Note &nbsp; <kbd>Shift</kbd>+<kbd>←→</kbd> Surah`;
+        hint.style.display = 'none';
+        document.body.appendChild(hint);
+
+        // Auto-hide after 8 seconds on first show
+        if (!localStorage.getItem('qc_kb_hint_seen')) {
+            setTimeout(() => {
+                if (hint.style.display !== 'none') {
+                    localStorage.setItem('qc_kb_hint_seen', 'true');
+                    setTimeout(() => hint.remove(), 8000);
+                }
+            }, 3000);
+        }
+    }
+
+    // ==========================================
+    // Loading Skeletons for Surah List
+    // ==========================================
+
+    function showSurahListSkeletons() {
+        dom.surahList.innerHTML = Array.from({ length: 10 }, () => `
+            <div class="skeleton-surah-card">
+                <div class="skeleton skeleton-circle"></div>
+                <div class="skeleton-lines">
+                    <div class="skeleton skeleton-line medium"></div>
+                    <div class="skeleton skeleton-line short"></div>
+                </div>
+            </div>
+        `).join('');
     }
 
     // ==========================================
@@ -2266,6 +3085,26 @@
         initTimers();
         setupEvents();
 
+        // Initialize Firebase for anonymous leaderboard
+        initFirebase();
+
+        // Setup new features
+        setupBottomNav();
+        setupOfflineDetection();
+        setupSwipeGestures();
+        setupBookmarkControls();
+        setupNotesModal();
+        createKeyboardHint();
+
+        // Ramadan share button
+        const shareBtn = $('#btn-share-progress');
+        if (shareBtn) {
+            shareBtn.addEventListener('click', shareRamadanProgress);
+        }
+
+        // Show surah list skeletons while loading
+        showSurahListSkeletons();
+
         try {
             await loadSurahList();
             renderSurahList();
@@ -2273,11 +3112,14 @@
             renderRamadanCountdown();
             renderSunnahTasks();
             updateGoalDisplays();
+            renderReadingStats();
         } catch (err) {
             dom.surahList.innerHTML = `
                 <div style="text-align:center;padding:2rem;color:var(--danger);">
-                    <p>${t('failedLoadData')}</p>
-                    <button onclick="location.reload()" style="margin-top:1rem;padding:0.5rem 1rem;border:1px solid;border-radius:8px;cursor:pointer;background:transparent;color:inherit;">${t('retry')}</button>
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.5" style="margin-bottom:0.75rem"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    <p style="font-weight:600">${t('failedLoadData')}</p>
+                    <p style="font-size:0.78rem;color:var(--text-tertiary);margin:0.5rem 0 1rem">${!navigator.onLine ? t('offlineMessage') : ''}</p>
+                    <button onclick="location.reload()" style="padding:0.6rem 1.5rem;border:1.5px solid var(--accent);border-radius:var(--radius-md);cursor:pointer;background:transparent;color:var(--accent);font-weight:600;font-family:var(--font-ui);font-size:0.88rem">${t('retry')}</button>
                 </div>
             `;
         }
@@ -2288,6 +3130,9 @@
             dom.app.classList.remove('hidden');
             setTimeout(() => dom.loadingScreen.remove(), 500);
             handleHashRoute();
+
+            // Show verse actions hint on first visit (delayed)
+            setTimeout(() => showVerseActionsHint(), 2000);
         }, 1600);
     }
 
@@ -2352,6 +3197,7 @@
         const hash = location.hash.replace('#', '');
         if (hash === 'bookmarks') showView('bookmarks');
         else if (hash === 'ramadan') showView('ramadan');
+        else if (hash === 'leaderboard') showView('leaderboard');
     }
 
     window.addEventListener('hashchange', handleHashRoute);
