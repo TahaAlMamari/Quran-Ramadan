@@ -260,6 +260,30 @@
             suggested: 'Next',
             ofJuz: 'of Juz',
             autoCompleted: 'Auto-completed',
+            // Sunnah Tasks
+            sunnahTasks: 'Daily Sunnah',
+            sunnahTasksDesc: 'Recommended daily Quran readings from the Sunnah',
+            sunnahCompleted: 'Completed today',
+            sunnahPending: 'Tap to read',
+            sunnahReward: 'Masha Allah!',
+            sunnahRewardSub: 'You completed a Sunnah reading!',
+            sunnahDone: 'Done',
+            sunnahReadNow: 'Read Now',
+            sunnahAllDone: 'All Sunnah tasks completed today!',
+            sunnahTask_baqarahLast2: 'Last 2 Ayahs of Al-Baqarah',
+            sunnahTask_baqarahLast2Desc: 'Whoever recites them at night, they will suffice him',
+            sunnahTask_kahf: 'Surah Al-Kahf (Friday)',
+            sunnahTask_kahfDesc: 'A light between two Fridays',
+            sunnahTask_mulk: 'Surah Al-Mulk',
+            sunnahTask_mulkDesc: 'Protection from the punishment of the grave',
+            sunnahTask_ikhlas3: 'Surah Al-Ikhlas 3 times',
+            sunnahTask_ikhlas3Desc: 'Equal to reciting the entire Quran',
+            sunnahTask_muawwidhat: 'Al-Falaq & An-Nas',
+            sunnahTask_muawwidhatDesc: 'Morning and evening protection',
+            sunnahTask_sajdah: 'Surah As-Sajdah',
+            sunnahTask_sajdahDesc: 'Recited by the Prophet before sleeping',
+            sunnahTask_ayatulKursi: 'Ayatul Kursi (Al-Baqarah 255)',
+            sunnahTask_ayatulKursiDesc: 'Greatest verse — protection until morning',
         },
         ar: {
             // Header & Nav
@@ -394,6 +418,30 @@
             suggested: 'التالي',
             ofJuz: 'من الجزء',
             autoCompleted: 'مكتمل تلقائيًا',
+            // Sunnah Tasks
+            sunnahTasks: 'السنن اليومية',
+            sunnahTasksDesc: 'قراءات قرآنية يومية مستحبة من السنة',
+            sunnahCompleted: 'مكتمل اليوم',
+            sunnahPending: 'اضغط للقراءة',
+            sunnahReward: 'ما شاء الله!',
+            sunnahRewardSub: 'أكملت قراءة سنة!',
+            sunnahDone: 'تم',
+            sunnahReadNow: 'اقرأ الآن',
+            sunnahAllDone: 'أكملت جميع سنن اليوم!',
+            sunnahTask_baqarahLast2: 'آخر آيتين من البقرة',
+            sunnahTask_baqarahLast2Desc: 'من قرأهما في ليلة كفتاه',
+            sunnahTask_kahf: 'سورة الكهف (الجمعة)',
+            sunnahTask_kahfDesc: 'نور بين الجمعتين',
+            sunnahTask_mulk: 'سورة الملك',
+            sunnahTask_mulkDesc: 'تمنع من عذاب القبر',
+            sunnahTask_ikhlas3: 'سورة الإخلاص ٣ مرات',
+            sunnahTask_ikhlas3Desc: 'تعدل قراءة القرآن كاملاً',
+            sunnahTask_muawwidhat: 'الفلق والناس',
+            sunnahTask_muawwidhatDesc: 'حماية الصباح والمساء',
+            sunnahTask_sajdah: 'سورة السجدة',
+            sunnahTask_sajdahDesc: 'كان النبي ﷺ يقرأها قبل النوم',
+            sunnahTask_ayatulKursi: 'آية الكرسي (البقرة ٢٥٥)',
+            sunnahTask_ayatulKursiDesc: 'أعظم آية — حماية حتى الصباح',
         },
     };
 
@@ -437,9 +485,11 @@
         filter: 'all',
         bookmarks: JSON.parse(localStorage.getItem('qc_bookmarks') || '[]'),
         readingProgress: JSON.parse(localStorage.getItem('qc_progress') || '{}'),
+        versePositions: JSON.parse(localStorage.getItem('qc_verse_positions') || '{}'),
         ramadanPlan: JSON.parse(localStorage.getItem('qc_ramadan') || '{"completedDays":[]}'),
         streak: JSON.parse(localStorage.getItem('qc_streak') || '{"count":0,"lastDate":null}'),
         settings: JSON.parse(localStorage.getItem('qc_settings') || '{}'),
+        activeSunnahTask: null,
         audioState: { playing: false, currentIndex: 0, repeat: false },
         fontSize: parseInt(localStorage.getItem('qc_fontsize') || '28'),
         goals: JSON.parse(localStorage.getItem('qc_goals') || '{"reciteMinutes":30,"listenMinutes":15}'),
@@ -819,6 +869,74 @@
         return text.substring(htmlPos).trim();
     }
 
+    // ==========================================
+    // Verse Position Tracking
+    // ==========================================
+
+    let currentVisibleVerse = 1;
+    let verseObserver = null;
+    let savePositionTimer = null;
+
+    function setupVerseTracking() {
+        if (verseObserver) verseObserver.disconnect();
+
+        const verses = dom.versesContainer.querySelectorAll('.verse');
+        if (verses.length === 0) return;
+
+        verseObserver = new IntersectionObserver((entries) => {
+            let topVerse = null;
+            let topY = Infinity;
+            for (const entry of entries) {
+                if (entry.isIntersecting) {
+                    const rect = entry.boundingClientRect;
+                    if (rect.top < topY) {
+                        topY = rect.top;
+                        topVerse = entry.target;
+                    }
+                }
+            }
+            if (topVerse) {
+                const num = parseInt(topVerse.dataset.verseInSurah);
+                if (num && num !== currentVisibleVerse) {
+                    currentVisibleVerse = num;
+                    debouncedSavePosition();
+                }
+            }
+        }, {
+            root: null,
+            rootMargin: '-10% 0px -70% 0px',
+            threshold: 0
+        });
+
+        verses.forEach(v => verseObserver.observe(v));
+    }
+
+    function debouncedSavePosition() {
+        if (savePositionTimer) clearTimeout(savePositionTimer);
+        savePositionTimer = setTimeout(() => {
+            saveReadingPosition();
+            // Check sunnah task completion when user scrolls to target verses
+            if (state.currentSurah) {
+                checkSunnahCompletion(state.currentSurah.number);
+            }
+        }, 1000);
+    }
+
+    function saveReadingPosition() {
+        if (!state.currentSurah) return;
+        const number = state.currentSurah.number;
+
+        state.versePositions[number] = currentVisibleVerse;
+        localStorage.setItem('qc_verse_positions', JSON.stringify(state.versePositions));
+
+        localStorage.setItem('qc_last_read', JSON.stringify({
+            surahNumber: number,
+            surahName: state.currentSurah.englishName,
+            surahNameAr: state.currentSurah.name,
+            verse: currentVisibleVerse,
+        }));
+    }
+
     function renderVerses() {
         const { arabic, translation, audio } = state.currentVerses;
         const showTranslation = state.settings.showTranslation;
@@ -1028,6 +1146,7 @@
         if (viewName === 'home') {
             renderHero();
             renderRamadanCountdown();
+            renderSunnahTasks();
             updateGoalDisplays();
         } else if (viewName === 'reader') {
             showTimerBar();
@@ -1076,21 +1195,31 @@
             // Show Ramadan banner in reader
             renderReaderRamadanBanner(number);
 
+            // Determine which verse to resume from
+            const targetVerse = scrollToVerse || state.versePositions[number] || null;
+
             // Save last read
+            currentVisibleVerse = targetVerse || 1;
             localStorage.setItem('qc_last_read', JSON.stringify({
                 surahNumber: number,
                 surahName: surah.englishName,
                 surahNameAr: surah.name,
-                verse: scrollToVerse || 1,
+                verse: currentVisibleVerse,
             }));
+
+            // Setup verse position tracking
+            setupVerseTracking();
+
+            // Check Sunnah task completion for whole-surah tasks
+            checkSunnahCompletion(number);
 
             // Update streak
             recordReading();
 
-            // Scroll to specific verse
-            if (scrollToVerse) {
+            // Scroll to saved/target verse
+            if (targetVerse && targetVerse > 1) {
                 setTimeout(() => {
-                    const verseEl = dom.versesContainer.querySelector(`[data-verse-in-surah="${scrollToVerse}"]`);
+                    const verseEl = dom.versesContainer.querySelector(`[data-verse-in-surah="${targetVerse}"]`);
                     if (verseEl) {
                         verseEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         verseEl.classList.add('playing');
@@ -1432,6 +1561,218 @@
     }
 
     // ==========================================
+    // Sunnah Tasks
+    // ==========================================
+
+    const SUNNAH_TASKS = [
+        {
+            id: 'baqarahLast2',
+            nameKey: 'sunnahTask_baqarahLast2',
+            descKey: 'sunnahTask_baqarahLast2Desc',
+            icon: '🌙',
+            surah: 2,
+            startVerse: 285,
+            endVerse: 286,
+            daily: true,
+        },
+        {
+            id: 'ayatulKursi',
+            nameKey: 'sunnahTask_ayatulKursi',
+            descKey: 'sunnahTask_ayatulKursiDesc',
+            icon: '🛡️',
+            surah: 2,
+            startVerse: 255,
+            endVerse: 255,
+            daily: true,
+        },
+        {
+            id: 'mulk',
+            nameKey: 'sunnahTask_mulk',
+            descKey: 'sunnahTask_mulkDesc',
+            icon: '📖',
+            surah: 67,
+            startVerse: null,
+            endVerse: null,
+            daily: true,
+        },
+        {
+            id: 'ikhlas3',
+            nameKey: 'sunnahTask_ikhlas3',
+            descKey: 'sunnahTask_ikhlas3Desc',
+            icon: '✨',
+            surah: 112,
+            startVerse: null,
+            endVerse: null,
+            daily: true,
+        },
+        {
+            id: 'muawwidhat',
+            nameKey: 'sunnahTask_muawwidhat',
+            descKey: 'sunnahTask_muawwidhatDesc',
+            icon: '🤲',
+            surah: 113,
+            startVerse: null,
+            endVerse: null,
+            daily: true,
+            extraSurah: 114,
+        },
+        {
+            id: 'sajdah',
+            nameKey: 'sunnahTask_sajdah',
+            descKey: 'sunnahTask_sajdahDesc',
+            icon: '🕌',
+            surah: 32,
+            startVerse: null,
+            endVerse: null,
+            daily: true,
+        },
+        {
+            id: 'kahf',
+            nameKey: 'sunnahTask_kahf',
+            descKey: 'sunnahTask_kahfDesc',
+            icon: '🕋',
+            surah: 18,
+            startVerse: null,
+            endVerse: null,
+            daily: false,
+            dayOfWeek: 5, // Friday
+        },
+    ];
+
+    function getSunnahState() {
+        const today = getToday();
+        const saved = JSON.parse(localStorage.getItem('qc_sunnah') || '{}');
+        if (saved.date !== today) {
+            return { date: today, completed: {} };
+        }
+        return saved;
+    }
+
+    function saveSunnahState(sunnahState) {
+        localStorage.setItem('qc_sunnah', JSON.stringify(sunnahState));
+    }
+
+    function getTodaysSunnahTasks() {
+        const dayOfWeek = new Date().getDay();
+        return SUNNAH_TASKS.filter(task => {
+            if (task.daily) return true;
+            if (task.dayOfWeek !== undefined) return dayOfWeek === task.dayOfWeek;
+            return false;
+        });
+    }
+
+    function renderSunnahTasks() {
+        const container = $('#sunnah-tasks-container');
+        if (!container) return;
+
+        const tasks = getTodaysSunnahTasks();
+        const sunnahState = getSunnahState();
+        const completedCount = tasks.filter(t => sunnahState.completed[t.id]).length;
+        const allDone = completedCount === tasks.length;
+
+        container.innerHTML = `
+            <div class="sunnah-header">
+                <div class="sunnah-header-left">
+                    <h2 class="section-title">${t('sunnahTasks')}</h2>
+                    <p class="sunnah-subtitle">${t('sunnahTasksDesc')}</p>
+                </div>
+                <div class="sunnah-counter">${completedCount}/${tasks.length}</div>
+            </div>
+            ${allDone ? `<div class="sunnah-all-done"><span class="sunnah-all-done-icon">🎉</span> ${t('sunnahAllDone')}</div>` : ''}
+            <div class="sunnah-tasks-list">
+                ${tasks.map(task => {
+                    const isDone = !!sunnahState.completed[task.id];
+                    return `
+                        <div class="sunnah-task ${isDone ? 'completed' : ''}" data-task-id="${task.id}">
+                            <div class="sunnah-task-icon">${task.icon}</div>
+                            <div class="sunnah-task-info">
+                                <div class="sunnah-task-name">${t(task.nameKey)}</div>
+                                <div class="sunnah-task-desc">${t(task.descKey)}</div>
+                            </div>
+                            <div class="sunnah-task-action">
+                                ${isDone
+                                    ? `<span class="sunnah-done-badge">${t('sunnahDone')} ✓</span>`
+                                    : `<button class="sunnah-read-btn" data-task-id="${task.id}">${t('sunnahReadNow')}</button>`
+                                }
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+
+        // Attach click handlers
+        container.querySelectorAll('.sunnah-read-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openSunnahTask(btn.dataset.taskId);
+            });
+        });
+
+        container.querySelectorAll('.sunnah-task:not(.completed)').forEach(card => {
+            card.addEventListener('click', () => {
+                openSunnahTask(card.dataset.taskId);
+            });
+        });
+    }
+
+    function openSunnahTask(taskId) {
+        const task = SUNNAH_TASKS.find(t => t.id === taskId);
+        if (!task) return;
+
+        // Store which sunnah task we are reading so we can detect completion
+        state.activeSunnahTask = taskId;
+
+        openSurah(task.surah, task.startVerse || 1);
+    }
+
+    function checkSunnahCompletion(surahNumber) {
+        if (!state.activeSunnahTask) return;
+
+        const task = SUNNAH_TASKS.find(t => t.id === state.activeSunnahTask);
+        if (!task) return;
+
+        // Check if the user opened the right surah
+        const matchesSurah = task.surah === surahNumber || task.extraSurah === surahNumber;
+        if (!matchesSurah) return;
+
+        // For tasks with specific verses, check if the user scrolled to them
+        if (task.startVerse && task.endVerse) {
+            if (currentVisibleVerse < task.startVerse) return;
+        }
+
+        // Mark as completed
+        const sunnahState = getSunnahState();
+        if (!sunnahState.completed[task.id]) {
+            sunnahState.completed[task.id] = true;
+            saveSunnahState(sunnahState);
+            showSunnahReward(task);
+            state.activeSunnahTask = null;
+        }
+    }
+
+    function showSunnahReward(task) {
+        document.querySelectorAll('.sunnah-reward-overlay').forEach(m => m.remove());
+        const overlay = document.createElement('div');
+        overlay.className = 'sunnah-reward-overlay';
+        overlay.innerHTML = `
+            <div class="sunnah-reward-card">
+                <div class="sunnah-reward-glow"></div>
+                <div class="sunnah-reward-icon">${task.icon}</div>
+                <div class="sunnah-reward-stars">&#9733; &#9733; &#9733;</div>
+                <div class="sunnah-reward-title">${t('sunnahReward')}</div>
+                <div class="sunnah-reward-sub">${t('sunnahRewardSub')}</div>
+                <div class="sunnah-reward-task">${t(task.nameKey)}</div>
+                <button class="sunnah-reward-btn">${t('milestoneDismiss')}</button>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        overlay.querySelector('.sunnah-reward-btn').addEventListener('click', () => overlay.remove());
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+        setTimeout(() => { if (overlay.parentNode) overlay.remove(); }, 6000);
+    }
+
+    // ==========================================
     // Settings & Theme
     // ==========================================
 
@@ -1691,7 +2032,10 @@
 
     function setupEvents() {
         // Navigation
-        $('#btn-home').addEventListener('click', () => showView('home'));
+        $('#btn-home').addEventListener('click', () => {
+            saveReadingPosition();
+            showView('home');
+        });
         $('#btn-bookmarks').addEventListener('click', () => showView('bookmarks'));
         $('#btn-ramadan').addEventListener('click', () => showView('ramadan'));
         $('#btn-settings').addEventListener('click', () => showView('settings'));
@@ -1732,11 +2076,13 @@
 
         // Reader
         $('#btn-back').addEventListener('click', () => {
+            saveReadingPosition();
             showView('home');
         });
 
         $('#btn-prev-surah').addEventListener('click', () => {
             if (state.currentSurah && state.currentSurah.number > 1) {
+                saveReadingPosition();
                 stopAudio();
                 openSurah(state.currentSurah.number - 1);
             }
@@ -1744,6 +2090,7 @@
 
         $('#btn-next-surah').addEventListener('click', () => {
             if (state.currentSurah && state.currentSurah.number < 114) {
+                saveReadingPosition();
                 stopAudio();
                 openSurah(state.currentSurah.number + 1);
             }
@@ -1845,9 +2192,11 @@
                 localStorage.removeItem('qc_streak');
                 localStorage.removeItem('qc_settings');
                 localStorage.removeItem('qc_last_read');
+                localStorage.removeItem('qc_verse_positions');
                 localStorage.removeItem('qc_fontsize');
                 localStorage.removeItem('qc_goals');
                 localStorage.removeItem('qc_timers');
+                localStorage.removeItem('qc_sunnah');
                 location.reload();
             }
         });
@@ -1922,6 +2271,7 @@
             renderSurahList();
             renderHero();
             renderRamadanCountdown();
+            renderSunnahTasks();
             updateGoalDisplays();
         } catch (err) {
             dom.surahList.innerHTML = `
@@ -2005,6 +2355,12 @@
     }
 
     window.addEventListener('hashchange', handleHashRoute);
+
+    // Save reading position when leaving/minimizing the app
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') saveReadingPosition();
+    });
+    window.addEventListener('beforeunload', saveReadingPosition);
 
     // Start the app
     if (document.readyState === 'loading') {
