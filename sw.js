@@ -1,5 +1,5 @@
 // Quran Companion — Service Worker
-const CACHE_NAME = 'quran-companion-v4';
+const CACHE_NAME = 'quran-companion-v5';
 const STATIC_ASSETS = [
     './',
     './index.html',
@@ -8,6 +8,7 @@ const STATIC_ASSETS = [
     './manifest.json',
     './icons/icon-192.svg',
     './icons/icon-512.svg',
+    './data/surahs.json',
 ];
 
 const API_CACHE = 'quran-api-v1';

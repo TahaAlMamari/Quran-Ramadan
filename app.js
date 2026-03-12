@@ -861,8 +861,16 @@
     }
 
     // ==========================================
-    // API Layer
+    // API Layer (local files first, API fallback)
     // ==========================================
+    const DATA_PATH = './data';
+
+    async function fetchLocalJSON(filePath) {
+        const res = await fetch(filePath);
+        if (!res.ok) return null;
+        return res.json();
+    }
+
     async function fetchAPI(endpoint) {
         const res = await fetch(`${API_BASE}${endpoint}`);
         if (!res.ok) throw new Error(`API error: ${res.status}`);
@@ -872,12 +880,40 @@
 
     async function loadSurahList() {
         if (state.surahs.length) return state.surahs;
+        // Try local file first
+        const local = await fetchLocalJSON(`${DATA_PATH}/surahs.json`);
+        if (local) {
+            state.surahs = local;
+            return state.surahs;
+        }
+        // Fallback to API
         state.surahs = await fetchAPI('/surah');
         return state.surahs;
     }
 
     async function loadSurah(number, reciter, translation) {
         const arabicEdition = state.settings.tajweed ? 'quran-tajweed' : 'quran-uthmani';
+
+        // Try loading from local files first
+        try {
+            const [arabicData, translationData, reciterData] = await Promise.all([
+                fetchLocalJSON(`${DATA_PATH}/editions/${arabicEdition}/${number}.json`),
+                fetchLocalJSON(`${DATA_PATH}/editions/${translation}/${number}.json`),
+                fetchLocalJSON(`${DATA_PATH}/editions/${reciter}/${number}.json`),
+            ]);
+
+            if (arabicData && translationData && reciterData) {
+                return {
+                    arabic: arabicData,
+                    translation: translationData,
+                    audio: reciterData,
+                };
+            }
+        } catch (e) {
+            // Local files not available, fall through to API
+        }
+
+        // Fallback to API
         const editions = `${arabicEdition},${translation},${reciter}`;
         const data = await fetchAPI(`/surah/${number}/editions/${editions}`);
         return {
